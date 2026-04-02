@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abundance — Internal Wiki</title>
+<style>
+:root {
+  --bg: #0E0D0C;
+  --surface: #161512;
+  --border: #2A2720;
+  --text: #E8E2D9;
+  --text2: #9A9086;
+  --text3: #5A5248;
+  --accent: #C8A96E;
+  --accent2: #8B6C3E;
+  --teal: #4AADA0;
+  --red: #D4614A;
+  --blue: #5B8FCC;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+.wrap { max-width: 580px; width: 100%; }
+
+.brand-initial {
+  width: 44px; height: 44px;
+  background: var(--accent);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Georgia', serif;
+  font-size: 22px;
+  color: #0E0D0C;
+  margin-bottom: 20px;
+}
+
+.brand-name {
+  font-family: 'Georgia', serif;
+  font-size: 26px;
+  font-weight: normal;
+  color: var(--text);
+  margin-bottom: 6px;
+  letter-spacing: -0.3px;
+}
+
+.brand-sub {
+  font-size: 13px;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  margin-bottom: 48px;
+}
+
+.cards { display: flex; flex-direction: column; gap: 12px; }
+
+.card {
+  display: block;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 22px 24px;
+  text-decoration: none;
+  transition: border-color 0.15s, background 0.15s;
+  cursor: pointer;
+}
+.card:hover { border-color: var(--text3); background: #1C1A17; }
+
+.card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.card-level {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 3px 9px;
+  border-radius: 3px;
+  border: 1px solid;
+}
+.card-level.red   { color: var(--red);    border-color: #7A3A2E; }
+.card-level.teal  { color: var(--teal);   border-color: #2A6B66; }
+.card-level.gold  { color: var(--accent); border-color: var(--accent2); }
+
+.card-arrow { font-size: 18px; color: var(--text3); }
+
+.card-title { font-size: 17px; font-weight: 500; color: var(--text); margin-bottom: 5px; font-family: 'Georgia', serif; }
+.card-desc  { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+.card-access {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text3);
+}
+
+.footer {
+  margin-top: 40px;
+  font-size: 12px;
+  color: var(--text3);
+  text-align: center;
+  line-height: 1.6;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand-initial">A</div>
+  <div class="brand-name">Abundance Taiwanese Restaurant</div>
+  <div class="brand-sub">Internal Wiki · Select your access level</div>
+
+  <div class="cards">
+
+    <a class="card" href="abundance_playbook_directors.html">
+      <div class="card-top">
+        <span class="card-level red">Directors</span>
+        <span class="card-arrow">→</span>
+      </div>
+      <div class="card-title">Directors Playbook</div>
+      <div class="card-desc">Brand story, org structure, director KPIs, meeting cadence, P&L framework, hiring plan, outlets overview, and master document list.</div>
+      <div class="card-access">For: Owner, Culinary Director, CK Manager, Finance & HR Lead, Marketing Manager</div>
+    </a>
+
+    <a class="card" href="abundance_playbook_managers.html">
+      <div class="card-top">
+        <span class="card-level teal">Managers</span>
+        <span class="card-arrow">→</span>
+      </div>
+      <div class="card-title">Managers Playbook</div>
+      <div class="card-desc">Your role and KPIs, monthly deadlines, sales and upselling, stock and ordering, staff management, delivery dispute scripts, and bookout rates.</div>
+      <div class="card-access">For: Outlet Managers, Kitchen In-Charge</div>
+    </a>
+
+    <a class="card" href="abundance_playbook_staff.html">
+      <div class="card-top">
+        <span class="card-level gold">Service Staff</span>
+        <span class="card-arrow">→</span>
+      </div>
+      <div class="card-title">Service Staff Playbook</div>
+      <div class="card-desc">Service standards, upselling SOP, food knowledge, discounts policy, food return guidelines, delivery packing, and staff benefits.</div>
+      <div class="card-access">For: Service crew, part-time staff</div>
+    </a>
+
+  </div>
+
+  <div class="footer">
+    Abundance Taiwanese Restaurant · Internal use only · Last updated April 2026
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abundance Wiki — Service Staff</title>
+<style>
+:root {
+  --ink: #1A1714; --ink2: #4A4440; --ink3: #8A7E78;
+  --cream: #FAF7F2; --cream2: #F2EDE4; --border: #E8E0D5;
+  --teal: #1A7566; --teal-light: #EAF4F1;
+  --amber: #C47A0A; --amber-light: #FEF6E6;
+  --red: #C0402A; --red-light: #FAF0EC;
+  --green: #2D7538; --green-light: #EBF5EC;
+  --sidebar: 230px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--cream); color: var(--ink); display: flex; min-height: 100vh; }
+
+.sidebar { width: var(--sidebar); background: #2C1810; color: #fff; position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto; display: flex; flex-direction: column; z-index: 100; }
+.sidebar-brand { padding: 22px 18px 16px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.sidebar-brand-name { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+.sidebar-brand-level { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.4); }
+.sidebar-level-badge { display: inline-block; font-size: 9px; font-weight: 500; padding: 2px 8px; border-radius: 100px; background: var(--amber); color: #fff; margin-top: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+.sidebar-nav { padding: 10px 0; flex: 1; }
+.nav-section-label { font-size: 9px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: rgba(255,255,255,0.3); padding: 10px 18px 4px; }
+.nav-item { display: flex; align-items: center; gap: 8px; padding: 8px 18px; font-size: 13px; color: rgba(255,255,255,0.65); cursor: pointer; transition: all 0.15s; border-left: 2px solid transparent; }
+.nav-item:hover { color: #fff; background: rgba(255,255,255,0.06); }
+.nav-item.active { color: #fff; border-left-color: var(--amber); background: rgba(255,255,255,0.08); }
+.sidebar-footer { padding: 12px 18px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; color: rgba(255,255,255,0.3); }
+
+.main { margin-left: var(--sidebar); flex: 1; }
+.topbar { background: var(--cream); border-bottom: 1px solid var(--border); padding: 12px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+.topbar-title { font-size: 14px; font-weight: 500; }
+.topbar-breadcrumb { font-size: 12px; color: var(--ink3); }
+.content { padding: 32px; max-width: 780px; }
+
+.page { display: none; }
+.page.active { display: block; }
+.page-eyebrow { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: var(--amber); margin-bottom: 8px; }
+.page-title { font-size: 26px; font-weight: 600; margin-bottom: 8px; }
+.page-desc { font-size: 14px; color: var(--ink2); line-height: 1.7; margin-bottom: 28px; }
+
+.card { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 18px; margin-bottom: 12px; }
+.section-h { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; color: var(--ink3); margin: 22px 0 10px; padding-bottom: 7px; border-bottom: 1px solid var(--border); }
+
+.info-box { border-radius: 10px; padding: 13px 15px; margin-bottom: 12px; font-size: 13px; line-height: 1.6; }
+.info-box.teal  { background: var(--teal-light); color: #085041; border: 1px solid #5DCAA5; }
+.info-box.amber { background: var(--amber-light); color: #633806; border: 1px solid #EF9F27; }
+.info-box.red   { background: var(--red-light);   color: #791F1F; border: 1px solid #F09595; }
+.info-box.green { background: var(--green-light);  color: #1A4A22; border: 1px solid #97C459; }
+
+ul.wiki-list { list-style: none; padding: 0; }
+ul.wiki-list li { font-size: 13px; color: var(--ink2); padding: 3px 0 3px 14px; position: relative; line-height: 1.55; }
+ul.wiki-list li::before { content: '·'; position: absolute; left: 3px; font-weight: 700; color: var(--ink3); }
+
+.wiki-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 12px; }
+.wiki-table th { text-align: left; padding: 9px 12px; background: var(--cream2); color: var(--ink2); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+.wiki-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--ink2); vertical-align: top; line-height: 1.5; }
+.wiki-table tr:last-child td { border-bottom: none; }
+
+/* Check/cross list */
+.check-list { list-style: none; padding: 0; }
+.check-list li { font-size: 13px; color: var(--ink2); padding: 4px 0 4px 22px; position: relative; line-height: 1.5; }
+.check-list li.yes::before { content: '✓'; position: absolute; left: 2px; color: var(--teal); font-weight: 700; }
+.check-list li.no::before  { content: '✗'; position: absolute; left: 2px; color: var(--red); font-weight: 700; }
+
+/* Step */
+.step { display: flex; gap: 14px; margin-bottom: 16px; }
+.step-num { width: 26px; height: 26px; border-radius: 50%; background: var(--amber); color: #fff; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+.step-body { flex: 1; }
+.step-title { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
+.step-desc { font-size: 12.5px; color: var(--ink2); line-height: 1.6; }
+
+/* Script box */
+.script-box { background: var(--teal-light); border-radius: 8px; padding: 12px 14px; font-size: 12.5px; color: #085041; line-height: 1.65; font-style: italic; margin: 8px 0; }
+
+/* Doc link */
+.doc-link { display: flex; align-items: center; gap: 10px; padding: 11px 14px; background: #fff; border: 1px solid var(--border); border-radius: 9px; margin-bottom: 7px; text-decoration: none; color: var(--ink); transition: all 0.15s; }
+.doc-link:hover { border-color: var(--ink3); background: var(--cream2); }
+.doc-name { font-size: 13px; font-weight: 500; }
+.doc-desc { font-size: 11px; color: var(--ink3); margin-top: 1px; }
+
+hr.wiki { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+/* Big welcome */
+.welcome-hero { background: linear-gradient(135deg, #1A3A2A 0%, #2C5040 100%); border-radius: 14px; padding: 28px; color: #fff; margin-bottom: 24px; }
+.welcome-hero h2 { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
+.welcome-hero p { font-size: 13px; opacity: 0.8; line-height: 1.7; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="sidebar-brand-name">Abundance Restaurant</div>
+    <div class="sidebar-brand-level">Team Wiki</div>
+    <div class="sidebar-level-badge">Service Staff</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Welcome</div>
+    <a class="nav-item active" onclick="nav('welcome')">◈ Welcome to Abundance</a>
+
+    <div class="nav-section-label">Service</div>
+    <a class="nav-item" onclick="nav('service')">◉ Service Standards</a>
+    <a class="nav-item" onclick="nav('upselling')">◎ Upselling SOP</a>
+    <a class="nav-item" onclick="nav('food')">◈ Food Knowledge</a>
+    <a class="nav-item" onclick="nav('discounts')">◷ Discounts Policy</a>
+    <a class="nav-item" onclick="nav('returns')">◉ Food Returns</a>
+
+    <div class="nav-section-label">Operations</div>
+    <a class="nav-item" onclick="nav('delivery')">◎ Delivery Packing</a>
+    <a class="nav-item" onclick="nav('wifi')">◈ WiFi Issues</a>
+
+    <div class="nav-section-label">Myself</div>
+    <a class="nav-item" onclick="nav('benefits')">◷ My Benefits</a>
+    <a class="nav-item" onclick="nav('docs')">◉ Documents</a>
+  </nav>
+  <div class="sidebar-footer">Last updated: April 2026</div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-breadcrumb">Service Staff Wiki</div>
+    <div class="topbar-title" id="topbar-title">Welcome to Abundance</div>
+  </div>
+  <div class="content">
+
+    <!-- WELCOME -->
+    <div class="page active" id="page-welcome">
+      <div class="welcome-hero">
+        <h2>Welcome to Abundance 🥢</h2>
+        <p>You're now part of a team that's building something real — a place where Taiwanese soulful cuisine meets Singapore's cravings. This wiki is your go-to reference for everything you need to know to do your job well and deliver a great experience every shift.</p>
+      </div>
+
+      <div class="page-eyebrow">Who we are</div>
+      <div class="page-title">About Abundance</div>
+      <div class="page-desc">A spot where Taiwanese soulful cuisine meets Singapore's cravings — great food, great drinks, great time.</div>
+
+      <div class="card">
+        <div style="font-size:14px;line-height:1.8;color:var(--ink2)">
+          Abundance serves Taiwanese fusion cuisine alongside craft beer and cocktails. We're not just another restaurant — we're a space where people come to feel good, eat well, and have a proper time out.
+          <br><br>
+          Every dish is built on genuine Taiwanese comfort food, made with care. Our job as a team is to make sure every guest feels that — from the moment they walk in to the moment they leave.
+        </div>
+      </div>
+
+      <div class="section-h">Our three outlets</div>
+      <div class="card">
+        <table class="wiki-table">
+          <thead><tr><th>Outlet</th><th>Short name</th></tr></thead>
+          <tbody>
+            <tr><td>Redhill</td><td>RH</td></tr>
+            <tr><td>Jalan Besar</td><td>JB</td></tr>
+            <tr><td>Century Square</td><td>CS</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section-h">What we expect from you</div>
+      <div class="card">
+        <ul class="wiki-list">
+          <li>Show up on time, in full uniform, ready to serve</li>
+          <li>Know your menu — tastings and product knowledge are not optional</li>
+          <li>Upsell on every table, every shift — drinks and desserts</li>
+          <li>Treat every guest the way you'd want to be treated</li>
+          <li>Flag problems to your manager — don't sit on issues</li>
+          <li>Represent Abundance well, even outside of work</li>
+        </ul>
+      </div>
+
+      <div class="section-h">Your onboarding checklist</div>
+      <div class="card">
+        <ul class="check-list">
+          <li class="yes">Complete the Abundance Training onboarding (target: within 2 months)</li>
+          <li class="yes">Attend a food tasting session and go through Product Knowledge deck</li>
+          <li class="yes">Read the Upselling SOP and practise the scripts</li>
+          <li class="yes">Read the Discounts Policy — know what you can and cannot offer</li>
+          <li class="yes">Read the Food Return Guidelines</li>
+          <li class="yes">Ensure your contact info is in the Staff Contact sheet</li>
+          <li class="yes">Collect your uniform and sign the Uniform Tracker</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- SERVICE STANDARDS -->
+    <div class="page" id="page-service">
+      <div class="page-eyebrow">Standards</div>
+      <div class="page-title">Service Standards</div>
+      <div class="page-desc">The baseline for how every Abundance guest should be served — every table, every shift.</div>
+
+      <div class="info-box teal">
+        Consistency is everything. A guest who visits RH, JB, and CS should get the same Abundance experience at all three. Your job is to deliver that standard every single time.
+      </div>
+
+      <div class="section-h">Table service flow</div>
+      <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Greet within 60 seconds</div><div class="step-desc">Acknowledge guests as soon as they sit. Make eye contact, smile, and let them know you'll be right with them.</div></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Take drinks order first</div><div class="step-desc">Always open with drinks before food. This is your first upselling opportunity. Recommend a craft beer, cocktail, or signature beverage.</div></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Take food order and upsell</div><div class="step-desc">Know the menu well enough to make recommendations. Highlight seasonal items and house specials. Let the guest feel guided, not sold to.</div></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Check back after food arrives</div><div class="step-desc">Within 2 minutes of food landing — check that everything is correct and the guest is happy. Fix any issues immediately.</div></div></div>
+      <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Offer dessert before clearing</div><div class="step-desc">Before clearing the main course, offer a dessert. This is your second upselling moment. Know the dessert options and be ready to describe them.</div></div></div>
+      <div class="step"><div class="step-num">6</div><div class="step-body"><div class="step-title">Bill and farewell</div><div class="step-desc">Bring the bill promptly when requested. Thank the guest genuinely as they leave — not robotically.</div></div></div>
+
+      <div class="section-h">Do's and don'ts</div>
+      <div class="card">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div>
+            <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--teal);margin-bottom:8px">Do</div>
+            <ul class="check-list">
+              <li class="yes">Make eye contact and smile</li>
+              <li class="yes">Know the menu inside out</li>
+              <li class="yes">Upsell on every table</li>
+              <li class="yes">Apologise sincerely when things go wrong</li>
+              <li class="yes">Follow the food return guidelines</li>
+              <li class="yes">Keep the floor clean and tables cleared</li>
+              <li class="yes">Report issues to your manager immediately</li>
+            </ul>
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--red);margin-bottom:8px">Don't</div>
+            <ul class="check-list">
+              <li class="no">Ignore guests or avoid eye contact</li>
+              <li class="no">Apply discounts not on the approved list</li>
+              <li class="no">Make promises you can't keep</li>
+              <li class="no">Argue with guests — escalate to manager</li>
+              <li class="no">Use your phone on the floor during service</li>
+              <li class="no">Handle food complaints without following SOP</li>
+              <li class="no">Leave dirty tables uncleared during service</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- UPSELLING -->
+    <div class="page" id="page-upselling">
+      <div class="page-eyebrow">Revenue</div>
+      <div class="page-title">Upselling SOP</div>
+      <div class="page-desc">Upselling at Abundance is not optional — it is built into our service standard. Every table, every shift.</div>
+
+      <div class="info-box amber">
+        <strong>Targets:</strong> ≥80% of customers order at least 1 drink · ≥75% of transactions include at least 1 dessert. These numbers are tracked by management monthly.
+      </div>
+
+      <div class="section-h">Why upselling matters</div>
+      <div class="card">
+        <div style="font-size:13px;color:var(--ink2);line-height:1.7">
+          A table that orders food, drinks, and dessert has a significantly higher average spend. This directly impacts outlet revenue and everyone's job security. Upselling isn't pushy — it's hospitality. You're helping guests discover things they'll enjoy.
+        </div>
+      </div>
+
+      <div class="section-h">Drinks — open with this</div>
+      <div class="card">
+        <div style="font-size:13px;font-weight:500;margin-bottom:8px">When taking the order, lead with drinks:</div>
+        <div class="script-box">"Can I start you off with something to drink? We have our craft beers, signature cocktails, and some really good [seasonal/house recommendation] if you'd like to try something different."</div>
+        <div style="font-size:12px;color:var(--ink3);margin-top:8px">If they decline: "No problem at all — would you like a soft drink or water while you look at the menu?"</div>
+      </div>
+
+      <div class="section-h">Desserts — close with this</div>
+      <div class="card">
+        <div style="font-size:13px;font-weight:500;margin-bottom:8px">Before clearing mains, offer dessert:</div>
+        <div class="script-box">"How was everything? Can I interest you in a dessert? Our [recommend 1–2 items] are really popular — a great way to end the meal."</div>
+        <div style="font-size:12px;color:var(--ink3);margin-top:8px">Never ask "do you want dessert?" — always frame it as a recommendation.</div>
+      </div>
+
+      <div class="section-h">Tips for effective upselling</div>
+      <div class="card">
+        <ul class="wiki-list">
+          <li>Know the menu — you can't recommend what you don't know</li>
+          <li>Be genuine — recommend things you've tasted and actually like</li>
+          <li>Read the table — a couple on a date vs a family with kids need different approaches</li>
+          <li>Don't rush — let guests feel comfortable, not pressured</li>
+          <li>If declined once, don't push again for the same item</li>
+        </ul>
+      </div>
+
+      <div class="section-h">Full upselling SOP document</div>
+      <a class="doc-link" href="https://docs.google.com/document/d/1VAnzLjd4v4u1p-9QgMX1W-TuIs89p7GPqCmP0iXurIA" target="_blank">
+        <span style="font-size:16px">📖</span>
+        <div><div class="doc-name">SOP + Training Guide for Upselling</div><div class="doc-desc">Full scripts and step-by-step guide</div></div>
+        <span style="font-size:13px;color:var(--ink3)">↗</span>
+      </a>
+    </div>
+
+    <!-- FOOD KNOWLEDGE -->
+    <div class="page" id="page-food">
+      <div class="page-eyebrow">Menu</div>
+      <div class="page-title">Food & Product Knowledge</div>
+      <div class="page-desc">Know what you're serving. Guests trust your recommendations — make them count.</div>
+
+      <div class="info-box teal">
+        Every new staff member must complete the food knowledge training within 2 months of joining. Your manager tracks this in the Product Knowledge Tracker.
+      </div>
+
+      <div class="section-h">How to build your food knowledge</div>
+      <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Complete onboarding training</div><div class="step-desc">Start with the Abundance Training document — covers the basics of our brand, service, and menu.</div></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Attend food tastings</div><div class="step-desc">Your manager will arrange food tasting sessions. Come ready to eat and pay attention to flavours, textures, and how to describe the dish to guests.</div></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Study the Product Knowledge deck</div><div class="step-desc">Available in English and Chinese. Shows photos, key flavour notes, and talking points for each dish.</div></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Apply it on the floor</div><div class="step-desc">The best training is doing it. Every guest question is a chance to practise your product knowledge.</div></div></div>
+
+      <div class="section-h">When describing a dish to a guest</div>
+      <div class="card">
+        <ul class="wiki-list">
+          <li>Lead with the key flavour — salty, rich, tangy, refreshing, light</li>
+          <li>Mention the texture — crispy, tender, silky, hearty</li>
+          <li>Note any dietary considerations if relevant — spicy, contains nuts, etc.</li>
+          <li>End with a personal touch — "It's one of our most popular dishes" or "I personally love this one"</li>
+        </ul>
+      </div>
+
+      <div class="section-h">Training documents</div>
+      <a class="doc-link" href="https://docs.google.com/document/d/1vADO5LOfSS2NL9cZjhwW4fagZxLgTceWyB0h7oKw5e4" target="_blank">
+        <span style="font-size:16px">📖</span><div><div class="doc-name">Abundance Training (Onboarding)</div><div class="doc-desc">Start here — complete within 2 months</div></div><span style="font-size:13px;color:var(--ink3)">↗</span>
+      </a>
+      <a class="doc-link" href="https://docs.google.com/presentation/d/1F60kMx4G9EFrLFiJgEydfiiU0U-YiA95GY4vtoexGDI" target="_blank">
+        <span style="font-size:16px">📖</span><div><div class="doc-name">Food Product Knowledge 2025 (English)</div><div class="doc-desc">Visuals and tasting notes</div></div><span style="font-size:13px;color:var(--ink3)">↗</span>
+      </a>
+      <a class="doc-link" href="https://docs.google.com/presentation/d/1tXo9tB_YMPyeevwGKqwl_xnDF4SrI3tz0dO8bcP962Y" target="_blank">
+        <span style="font-size:16px">📖</span><div><div class="doc-name">Food Product Knowledge 2025 (中文)</div><div class="doc-desc">Chinese version</div></div><span style="font-size:13px;color:var(--ink3)">↗</span>
+      </a>
+    </div>
+
+    <!-- DISCOUNTS -->
+    <div class="page" id="page-discounts">
+      <div class="page-eyebrow">Policy</div>
+      <div class="page-title">Discounts Policy</div>
+      <div class="page-desc">Only approved discounts may be applied. No exceptions. When in doubt, ask your manager.</div>
+
+      <div class="info-box red">
+        <strong>Hard rule:</strong> Never apply a discount that is not on the approved Discounts Summary list. No double discounts. Minimum spend requirements must be met before any discount is applied. Misuse of discounts is a disciplinary matter.
+      </div>
+
+      <div class="card">
+        <ul class="wiki-list">
+          <li>Only discounts listed in the Discounts Summary are valid</li>
+          <li>One discount per transaction — no stacking unless explicitly stated</li>
+          <li>Always check minimum spend before applying</li>
+          <li>If a guest claims a discount you're not sure about, check with your manager first</li>
+          <li>Never promise a discount that hasn't been pre-approved</li>
+        </ul>
+      </div>
+
+      <a class="doc-link" href="https://docs.google.com/spreadsheets/d/180fBpyDDky7Hywwacm3EzcN_A2LkYG_Hn4DozexPahg" target="_blank">
+        <span style="font-size:16px">📋</span><div><div class="doc-name">Discounts Summary</div><div class="doc-desc">Full list of approved discounts</div></div><span style="font-size:13px;color:var(--ink3)">↗</span>
+      </a>
+    </div>
+
+    <!-- FOOD RETURNS -->
+    <div class="page" id="page-returns">
+      <div class="page-eyebrow">Guest issues</div>
+      <div class="page-title">Food Return Guidelines</div>
+      <div class="page-desc">What to do when a guest has a complaint about their food. Stay calm, follow the steps.</div>
+
+      <div class="info-box amber">
+        Do not make promises or offer refunds/replacements without following these guidelines and checking with your manager. A genuine apology goes a long way before any solution is offered.
+      </div>
+
+      <div class="section-h">When a guest complains about food</div>
+      <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Listen and acknowledge</div><div class="step-desc">Let the guest finish. Do not interrupt or get defensive. Say: "I'm so sorry to hear that, let me look into this for you right away."</div></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Assess the situation</div><div class="step-desc">Is this a genuine food issue (wrong item, foreign object, off taste) or a preference issue? Note exactly what the complaint is.</div></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Inform your manager immediately</div><div class="step-desc">Never handle a food complaint alone. Bring your manager in. Do not offer refunds, replacements, or comps without manager approval.</div></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Follow the guidelines</div><div class="step-desc">Your manager will handle the resolution using the Food Return Guidelines. Your job is to stay calm, be present, and make the guest feel heard.</div></div></div>
+      <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Document it</div><div class="step-desc">After the guest leaves, ensure the incident is recorded. Your manager will handle this — just make sure it doesn't get forgotten.</div></div></div>
+
+      <a class="doc-link" href="https://docs.google.com/document/d/1XDRrRg1xi25_oG5COjjPxu5l3Y5HXrMU5QB14eJz9iw" target="_blank">
+        <span style="font-size:16px">📋</span><div><div class="doc-name">Food Return Guidelines</div><div class="doc-desc">Full guidelines for all food lapse scenarios</div></div><span style="font-size:13px;color:var(--ink3)">↗</span>
+      </a>
+    </div>
+
+    <!-- DELIVERY PACKING -->
+    <div class="page" id="page-delivery">
+      <div class="page-eyebrow">Operations</div>
+      <div class="page-title">Delivery Packing</div>
+      <div class="page-desc">How to pack delivery orders correctly and avoid disputes.</div>
+
+      <div class="info-box teal">
+        Every delivery dispute costs the business money. The best way to prevent disputes is to pack correctly every single time.
+      </div>
+
+      <div class="section-h">Packing checklist</div>
+      <div class="card">
+        <ul class="check-list">
+          <li class="yes">Check order on screen before packing — match every item</li>
+          <li class="yes">Pack sauces and condiments in a separate container, clearly labelled</li>
+          <li class="yes">Seal all containers before placing in bag</li>
+          <li class="yes">Double-check the full order against the receipt before closing bag</li>
+          <li class="yes">Hand to rider only after bag is sealed and complete</li>
+          <li class="no">Do not rush packing — a missed item always costs more time to fix</li>
+          <li class="no">Do not include cutlery unless requested — it is optional and complimentary</li>
+        </ul>
+      </div>
+
+      <div class="section-h">If there's a packing error</div>
+      <div class="card">
+        <ul class="wiki-list">
+          <li>Inform your manager immediately — don't wait for the dispute to come in</li>
+          <li>Note the order number, what was wrong, and what happened</li>
+          <li>If the rider is still present, correct the order before they leave if possible</li>
+          <li>Your manager will handle the dispute submission</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- WIFI -->
+    <div class="page" id="page-wifi">
+      <div class="page-eyebrow">Technical</div>
+      <div class="page-title">WiFi Issues</div>
+      <div class="page-desc">What to do if the WiFi goes down at your outlet.</div>
+
+      <div class="info-box amber">
+        WiFi issues affect POS, delivery platforms, and payments. Act fast and follow the contingency guide.
+      </div>
+
+      <div class="card">
+        <ul class="wiki-list">
+          <li>Your first step is always to check the WiFi Contingency guide for your outlet</li>
+          <li>Try the standard restart steps listed in the guide before escalating</li>
+          <li>If the issue persists after following the guide, inform your manager immediately</li>
+          <li>Do not attempt to fix hardware or reconfigure router settings yourself</li>
+        </ul>
+      </div>
+
+      <a class="doc-link" href="https://docs.google.com/document/d/1eKy-vVVgUFdyMtmUODKUMekghlBnBJbEz3UD-wEssUY" target="_blank">
+        <span style="font-size:16px">📋</span><div><div class="doc-name">WiFi Contingency Guide</div><div class="doc-desc">Step-by-step during WiFi breakdown</div></div><span style="font-size:13px;color:var(--ink3)">↗</span>
+      </a>
+    </div>
+
+    <!-- BENEFITS -->
+    <div class="page" id="page-benefits">
+      <div class="page-eyebrow">For you</div>
+      <div class="page-title">My Benefits</div>
+      <div class="page-desc">What you're entitled to as an Abundance team member.</div>
+
+      <div class="section-h">Your entitlements</div>
+      <div class="card">
+        <table class="wiki-table">
+          <thead><tr><th>Benefit</th><th>Details</th></tr></thead>
+          <tbody>
+            <tr><td>Staff free meal</td><td>1 free meal per month · logged in the Staff Free Meal Log Sheet</td></tr>
+            <tr><td>Birthday voucher</td><td>$88 voucher on your birthday · logged in Birthday Voucher Redemption Log</td></tr>
+            <tr><td>Uniform</td><td>Issued on joining · exchanges tracked in Uniform Tracker</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section-h">Leave</div>
+      <div class="card">
+        <ul class="wiki-list">
+          <li>All leave requests must go through the Leave Block Out sheet</li>
+          <li>Submit requests to your manager as early as possible — not last minute</li>
+          <li>Leave during peak periods (public holidays, weekends) is subject to approval based on manpower needs</li>
+        </ul>
+      </div>
+
+      <div class="section-h">Uniform policy</div>
+      <div class="card">
+        <ul class="wiki-list">
+          <li>Wear your full uniform on every shift — no exceptions</li>
+          <li>Keep it clean and presentable</li>
+          <li>If your uniform is damaged or worn out, request an exchange through your manager</li>
+          <li>Uniform exchanges are tracked — take care of your uniform</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- DOCS -->
+    <div class="page" id="page-docs">
+      <div class="page-eyebrow">Reference</div>
+      <div class="page-title">Documents</div>
+      <div class="page-desc">All documents relevant to service staff.</div>
+
+      <div class="section-h">Training</div>
+      <a class="doc-link" href="https://docs.google.com/document/d/1vADO5LOfSS2NL9cZjhwW4fagZxLgTceWyB0h7oKw5e4" target="_blank"><span style="font-size:16px">📖</span><div><div class="doc-name">Abundance Training (Onboarding)</div><div class="doc-desc">Complete within 2 months</div></div><span style="font-size:13px;color:var(--ink3)">↗</span></a>
+      <a class="doc-link" href="https://docs.google.com/presentation/d/1F60kMx4G9EFrLFiJgEydfiiU0U-YiA95GY4vtoexGDI" target="_blank"><span style="font-size:16px">📖</span><div><div class="doc-name">Food Product Knowledge (EN)</div><div class="doc-desc">Tasting notes and visuals</div></div><span style="font-size:13px;color:var(--ink3)">↗</span></a>
+      <a class="doc-link" href="https://docs.google.com/presentation/d/1tXo9tB_YMPyeevwGKqwl_xnDF4SrI3tz0dO8bcP962Y" target="_blank"><span style="font-size:16px">📖</span><div><div class="doc-name">Food Product Knowledge (中文)</div><div class="doc-desc">Chinese version</div></div><span style="font-size:13px;color:var(--ink3)">↗</span></a>
+      <a class="doc-link" href="https://docs.google.com/document/d/1VAnzLjd4v4u1p-9QgMX1W-TuIs89p7GPqCmP0iXurIA" target="_blank"><span style="font-size:16px">📖</span><div><div class="doc-name">Upselling SOP</div><div class="doc-desc">Scripts and upselling steps</div></div><span style="font-size:13px;color:var(--ink3)">↗</span></a>
+
+      <div class="section-h">Policies & SOPs</div>
+      <a class="doc-link" href="https://docs.google.com/spreadsheets/d/180fBpyDDky7Hywwacm3EzcN_A2LkYG_Hn4DozexPahg" target="_blank"><span style="font-size:16px">📋</span><div><div class="doc-name">Discounts Summary</div><div class="doc-desc">Approved discounts only</div></div><span style="font-size:13px;color:var(--ink3)">↗</span></a>
+      <a class="doc-link" href="https://docs.google.com/document/d/1XDRrRg1xi25_oG5COjjPxu5l3Y5HXrMU5QB14eJz9iw" target="_blank"><span style="font-size:16px">📋</span><div><div class="doc-name">Food Return Guidelines</div><div class="doc-desc">Handling food complaints</div></div><span style="font-size:13px;color:var(--ink3)">↗</span></a>
+      <a class="doc-link" href="https://docs.google.com/document/d/1eKy-vVVgUFdyMtmUODKUMekghlBnBJbEz3UD-wEssUY" target="_blank"><span style="font-size:16px">📋</span><div><div class="doc-name">WiFi Contingency</div><div class="doc-desc">Steps during WiFi breakdown</div></div><span style="font-size:13px;color:var(--ink3)">↗</span></a>
+    </div>
+
+  </div>
+</main>
+
+<script>
+const titles = { welcome:'Welcome to Abundance', service:'Service Standards', upselling:'Upselling SOP', food:'Food & Product Knowledge', discounts:'Discounts Policy', returns:'Food Return Guidelines', delivery:'Delivery Packing', wifi:'WiFi Issues', benefits:'My Benefits', docs:'Documents' };
+function nav(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  document.getElementById('topbar-title').textContent = titles[id];
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>

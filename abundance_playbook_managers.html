@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abundance Wiki — Managers</title>
+<style>
+:root {
+  --ink: #1A1714; --ink2: #4A4440; --ink3: #8A7E78;
+  --cream: #FAF7F2; --cream2: #F2EDE4; --border: #E8E0D5;
+  --teal: #1A7566; --teal-light: #EAF4F1;
+  --amber: #C47A0A; --amber-light: #FEF6E6;
+  --blue: #1A5B9E; --blue-light: #EBF1FA;
+  --red: #C0402A; --red-light: #FAF0EC;
+  --sidebar: 250px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--cream); color: var(--ink); display: flex; min-height: 100vh; }
+
+.sidebar { width: var(--sidebar); background: #1A3A2A; color: #fff; position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto; display: flex; flex-direction: column; z-index: 100; }
+.sidebar-brand { padding: 24px 20px 18px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.sidebar-brand-name { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+.sidebar-brand-level { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.4); }
+.sidebar-level-badge { display: inline-block; font-size: 9px; font-weight: 500; padding: 2px 8px; border-radius: 100px; background: var(--teal); color: #fff; margin-top: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+.sidebar-nav { padding: 12px 0; flex: 1; }
+.nav-section-label { font-size: 9px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: rgba(255,255,255,0.3); padding: 10px 20px 4px; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 20px; font-size: 13px; color: rgba(255,255,255,0.65); cursor: pointer; transition: all 0.15s; border-left: 2px solid transparent; }
+.nav-item:hover { color: #fff; background: rgba(255,255,255,0.06); }
+.nav-item.active { color: #fff; border-left-color: #5DCAA5; background: rgba(255,255,255,0.08); }
+.sidebar-footer { padding: 14px 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; color: rgba(255,255,255,0.3); }
+
+.main { margin-left: var(--sidebar); flex: 1; }
+.topbar { background: var(--cream); border-bottom: 1px solid var(--border); padding: 12px 36px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+.topbar-title { font-size: 14px; font-weight: 500; color: var(--ink); }
+.topbar-breadcrumb { font-size: 12px; color: var(--ink3); }
+.content { padding: 36px; max-width: 820px; }
+
+.page { display: none; }
+.page.active { display: block; }
+.page-eyebrow { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: var(--teal); margin-bottom: 8px; }
+.page-title { font-size: 28px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
+.page-desc { font-size: 14px; color: var(--ink2); line-height: 1.7; margin-bottom: 32px; }
+
+.card { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 14px; }
+.section-h { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; color: var(--ink3); margin: 24px 0 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.info-box { border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; font-size: 13px; line-height: 1.6; }
+.info-box.teal { background: var(--teal-light); color: #085041; border: 1px solid #5DCAA5; }
+.info-box.amber { background: var(--amber-light); color: #633806; border: 1px solid #EF9F27; }
+.info-box.red { background: var(--red-light); color: #791F1F; border: 1px solid #F09595; }
+.info-box.blue { background: var(--blue-light); color: #0C447C; border: 1px solid #85B7EB; }
+
+ul.wiki-list { list-style: none; padding: 0; }
+ul.wiki-list li { font-size: 13px; color: var(--ink2); padding: 3px 0 3px 14px; position: relative; line-height: 1.55; }
+ul.wiki-list li::before { content: '·'; position: absolute; left: 3px; font-weight: 700; color: var(--ink3); }
+
+.wiki-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 14px; }
+.wiki-table th { text-align: left; padding: 9px 12px; background: var(--cream2); color: var(--ink2); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+.wiki-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--ink2); vertical-align: top; line-height: 1.5; }
+.wiki-table tr:last-child td { border-bottom: none; }
+
+.kpi-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--border); }
+.kpi-row:last-child { border-bottom: none; }
+.kpi-name { font-size: 13px; color: var(--ink2); }
+.kpi-target { font-size: 12px; font-weight: 500; background: var(--cream2); padding: 3px 9px; border-radius: 5px; }
+.kpi-tbd { font-size: 12px; color: var(--ink3); font-style: italic; }
+
+.doc-link { display: flex; align-items: center; gap: 10px; padding: 11px 14px; background: #fff; border: 1px solid var(--border); border-radius: 9px; margin-bottom: 7px; text-decoration: none; color: var(--ink); transition: all 0.15s; }
+.doc-link:hover { border-color: var(--ink3); background: var(--cream2); }
+.doc-icon { font-size: 16px; flex-shrink: 0; }
+.doc-name { font-size: 13px; font-weight: 500; color: var(--ink); }
+.doc-desc { font-size: 11px; color: var(--ink3); margin-top: 1px; }
+.doc-arrow { font-size: 13px; color: var(--ink3); }
+
+.deadline-badge { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 5px; background: var(--amber-light); color: var(--amber); }
+
+.dispute-card { background: #fff; border: 1px solid var(--border); border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
+.dispute-header { padding: 13px 16px; background: var(--cream2); font-size: 13px; font-weight: 500; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+.dispute-body { display: none; padding: 14px 16px; border-top: 1px solid var(--border); }
+.dispute-body.open { display: block; }
+.dispute-script { background: var(--teal-light); border-radius: 8px; padding: 12px; font-size: 12px; color: #085041; line-height: 1.65; margin-top: 8px; font-style: italic; }
+.dispute-pre { background: var(--amber-light); border-radius: 8px; padding: 12px; font-size: 12px; color: #633806; line-height: 1.65; margin-top: 8px; font-style: italic; }
+
+hr.wiki { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="sidebar-brand-name">Abundance Restaurant</div>
+    <div class="sidebar-brand-level">Internal Wiki</div>
+    <div class="sidebar-level-badge">Managers Access</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Overview</div>
+    <a class="nav-item active" onclick="nav('role')">◈ Your Role & KPIs</a>
+    <a class="nav-item" onclick="nav('deadlines')">◷ Monthly Deadlines</a>
+
+    <div class="nav-section-label">Operations</div>
+    <a class="nav-item" onclick="nav('sales')">◉ Sales & Revenue</a>
+    <a class="nav-item" onclick="nav('stock')">◎ Stock & Ordering</a>
+    <a class="nav-item" onclick="nav('staff')">◈ Staff Management</a>
+    <a class="nav-item" onclick="nav('audit')">◷ Audit & Compliance</a>
+    <a class="nav-item" onclick="nav('delivery')">◉ Delivery Disputes</a>
+    <a class="nav-item" onclick="nav('bookout')">◎ Bookout Rates</a>
+
+    <div class="nav-section-label">Documents</div>
+    <a class="nav-item" onclick="nav('docs')">◈ Document Links</a>
+  </nav>
+  <div class="sidebar-footer">Last updated: April 2026</div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-breadcrumb">Managers Wiki</div>
+    <div class="topbar-title" id="topbar-title">Your Role & KPIs</div>
+  </div>
+  <div class="content">
+
+    <!-- ROLE & KPIs -->
+    <div class="page active" id="page-role">
+      <div class="page-eyebrow">Your responsibilities</div>
+      <div class="page-title">Your Role & KPIs</div>
+      <div class="page-desc">What you own as an outlet manager and how your performance is measured.</div>
+
+      <div class="section-h">What you own</div>
+      <div class="card">
+        <ul class="wiki-list">
+          <li>Floor operations and crew management day-to-day</li>
+          <li>Rostering, scheduling, and leave coordination</li>
+          <li>Delivery order reconciliation and dispute tracking</li>
+          <li>Inventory stocktake and ordering compliance</li>
+          <li>Upselling execution — drinks and dessert attachment</li>
+          <li>Product training for your team</li>
+          <li>Outlet cleanliness, service standards, and audit readiness</li>
+          <li>Petty cash management and submission</li>
+        </ul>
+      </div>
+
+      <div class="section-h">Your KPIs</div>
+      <div class="card">
+        <div class="kpi-row"><span class="kpi-name">Sales vs target</span><span class="kpi-tbd">Monthly tracking</span></div>
+        <div class="kpi-row"><span class="kpi-name">Drinks per customer</span><span class="kpi-target">≥80%</span></div>
+        <div class="kpi-row"><span class="kpi-name">Dessert per transaction</span><span class="kpi-target">≥75%</span></div>
+        <div class="kpi-row"><span class="kpi-name">Google review score</span><span class="kpi-tbd">Track monthly</span></div>
+        <div class="kpi-row"><span class="kpi-name">Labour cost % (per outlet)</span><span class="kpi-tbd">Target to be set</span></div>
+        <div class="kpi-row"><span class="kpi-name">SOP audit pass rate</span><span class="kpi-target">≥90%</span></div>
+      </div>
+
+      <div class="section-h">What success looks like</div>
+      <div class="info-box teal">
+        A great outlet manager runs the outlet so well that the owner and ops manager rarely need to intervene. You spot problems before they escalate, you develop your team, and your numbers speak for themselves.
+      </div>
+
+      <div class="section-h">Monday check-in (weekly)</div>
+      <div class="card">
+        <div style="font-size:13px;color:var(--ink2);line-height:1.6">Every Monday morning, send your ops manager a 3-line update:</div>
+        <ul class="wiki-list" style="margin-top:10px">
+          <li><strong>One number</strong> — last week's key metric (sales, drinks %, dessert %)</li>
+          <li><strong>One win</strong> — something that went well</li>
+          <li><strong>One blocker</strong> — something you need help with</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- MONTHLY DEADLINES -->
+    <div class="page" id="page-deadlines">
+      <div class="page-eyebrow">Timing</div>
+      <div class="page-title">Monthly Deadlines</div>
+      <div class="page-desc">Never miss a submission. These are your fixed monthly commitments as an outlet manager.</div>
+
+      <div class="card">
+        <table class="wiki-table">
+          <thead><tr><th>Deadline</th><th>Task</th><th>Submit to</th></tr></thead>
+          <tbody>
+            <tr><td><span class="deadline-badge">1st</span></td><td>Daily sales keyed into Ops Dashboard (ongoing)</td><td>Ops Dashboard</td></tr>
+            <tr><td><span class="deadline-badge">5th</span></td><td>Month End Stock Take Form</td><td>Ops Manager</td></tr>
+            <tr><td><span class="deadline-badge">5th</span></td><td>Stock Movement Form</td><td>Ops Manager</td></tr>
+            <tr><td><span class="deadline-badge">15th</span></td><td>Monthly Schedule (next month)</td><td>Ops Manager</td></tr>
+            <tr><td><span class="deadline-badge">25th</span></td><td>Petty Cash Submission</td><td>Finance Admin (YX)</td></tr>
+            <tr><td><span class="deadline-badge">Last day</span></td><td>Part-time Payroll Form (your outlet)</td><td>Finance Admin</td></tr>
+            <tr><td><span class="deadline-badge">Monthly</span></td><td>Outlet Audit Marking</td><td>Ops Manager</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="info-box amber">
+        Late submissions create a cascading effect for finance and ops. If you anticipate a delay, inform your ops manager before the deadline — not after.
+      </div>
+    </div>
+
+    <!-- SALES & REVENUE -->
+    <div class="page" id="page-sales">
+      <div class="page-eyebrow">Revenue</div>
+      <div class="page-title">Sales & Revenue</div>
+      <div class="page-desc">How to track, reconcile, and improve sales performance at your outlet.</div>
+
+      <div class="section-h">Daily sales entry</div>
+      <div class="card">
+        <ul class="wiki-list">
+          <li>Key in daily sales into the Ops Dashboard every day</li>
+          <li>Cross-check POS backend vs keyed-in sales — flag discrepancies immediately</li>
+          <li>Delivery sales reconciliation: match platform payouts to actual orders</li>
+          <li>Delivery disputes: track and submit within 48 hours of incident</li>
+        </ul>
+      </div>
+
+      <div class="section-h">Upselling — your biggest lever</div>
+      <div class="card">
+        <div style="font-size:13px;color:var(--ink2);line-height:1.6;margin-bottom:12px">Upselling is not left to chance at Abundance. It is built into our service SOP. Your job is to make sure every table is offered a drink and every transaction is offered a dessert — consistently, every shift.</div>
+        <div class="kpi-row"><span class="kpi-name">Drinks target</span><span class="kpi-target">≥80% of customers order 1 drink</span></div>
+        <div class="kpi-row"><span class="kpi-name">Dessert target</span><span class="kpi-target">≥75% of transactions include 1 dessert</span></div>
+        <div style="font-size:12px;color:var(--ink3);margin-top:10px">Refer to the Upselling SOP for exact scripts and timing.</div>
+      </div>
+
+      <div class="section-h">Competitor monitoring</div>
+      <div class="card">
+        <ul class="wiki-list">
+          <li>Update the Competitor Monitoring sheet when not busy during off-peak hours</li>
+          <li>Record promotions, pricing changes, and crowd levels at nearby competitors</li>
+          <li>Flag anything unusual or interesting to your ops manager</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- STOCK & ORDERING -->
+    <div class="page" id="page-stock">
+      <div class="page-eyebrow">Inventory</div>
+      <div class="page-title">Stock & Ordering</div>
+      <div class="page-desc">How to manage stock at your outlet — ordering, stocktake, and variance reporting.</div>
+
+      <div class="section-h">Ordering principles</div>
+      <div class="card">
+        <ul class="wiki-list">
+          <li>Order based on par levels — never by gut feel</li>
+          <li>Refer to the Ordering Groupchat Purchase Lists for par levels and MOQ per supplier</li>
+          <li>Never over-order — check current stock before placing orders</li>
+          <li>All ordering goes through the designated supplier groupchats</li>
+          <li>Supplier invoice verification is handled at outlet level — check invoices on delivery</li>
+        </ul>
+      </div>
+
+      <div class="section-h">Month end stock take (submit by 5th)</div>
+      <div class="card">
+        <ul class="wiki-list">
+          <li>Count all stock at end of month — every item, every category</li>
+          <li>Enter counts into Month End Stock Take Form</li>
+          <li>Variance between opening stock + purchases − closing stock = usage</li>
+          <li>If variance is unexplained, flag it with a note before submitting</li>
+          <li>Submit to ops manager by the 5th of the following month</li>
+        </ul>
+      </div>
+
+      <div class="section-h">Stock movement form (submit by 5th)</div>
+      <div class="card">
+        <ul class="wiki-list">
+          <li>Record all purchases, transfers in/out, and closing balances</li>
+          <li>Helps identify if your outlet is over-ordering or under-ordering</li>
+          <li>Submit alongside stock take form by the 5th</li>
+        </ul>
+      </div>
+
+      <div class="info-box amber">
+        Wastage is money leaving the business. If you notice recurring wastage on a specific item, flag it to the CK Manager — it may be a par level or portioning issue.
+      </div>
+    </div>
+
+    <!-- STAFF MANAGEMENT -->
+    <div class="page" id="page-staff">
+      <div class="page-eyebrow">People</div>
+      <div class="page-title">Staff Management</div>
+      <div class="page-desc">Scheduling, leave, payroll, training, and team development.</div>
+
+      <div class="section-h">Monthly schedule (submit by 15th)</div>
+      <div class="card">
+        <ul class="wiki-list">
+          <li>Plan next month's roster and submit by the 15th of current month</li>
+          <li>Ensure minimum staffing coverage for all shifts, especially weekends</li>
+          <li>Coordinate part-time availability before finalising the schedule</li>
+          <li>Use the Part-time Rate Legend to verify pay rates before scheduling</li>
+        </ul>
+      </div>
+
+      <div class="section-h">Leave management</div>
+      <div class="card">
+        <ul class="wiki-list">
+          <li>All leave requests go into the Leave Block Out sheet</li>
+          <li>Inform ops manager of any update to leave requests</li>
+          <li>Do not approve leave that leaves the outlet understaffed without a replacement plan</li>
+        </ul>
+      </div>
+
+      <div class="section-h">Part-time payroll (submit last day of month)</div>
+      <div class="card">
+        <ul class="wiki-list">
+          <li>Fill in your outlet's Part-time Payroll Form by the last day of each month</li>
+          <li>Cross-check against the Part-time Rate Legend for correct rates</li>
+          <li>Submit to Finance Admin for processing</li>
+        </ul>
+        <div style="font-size:12px;color:var(--ink3);margin-top:8px">RH → RH Part-Time Form · JB → JB Part-Time Form · CS → CS Part-Time Form</div>
+      </div>
+
+      <div class="section-h">Product training</div>
+      <div class="card">
+        <ul class="wiki-list">
+          <li>Every new staff member must complete the Abundance Training onboarding within 2 months</li>
+          <li>Run food tastings using the Food Product Knowledge deck (EN or Chinese)</li>
+          <li>Track each staff member's progress in the Product Knowledge Tracker</li>
+          <li>You are responsible for ensuring your team knows the menu well enough to upsell</li>
+        </ul>
+      </div>
+
+      <div class="section-h">Staff benefits to track</div>
+      <div class="card">
+        <table class="wiki-table">
+          <thead><tr><th>Benefit</th><th>Entitlement</th><th>Tracking</th></tr></thead>
+          <tbody>
+            <tr><td>Staff free meal</td><td>1 meal per staff per month</td><td>Staff Free Meal Log Sheet</td></tr>
+            <tr><td>Birthday voucher</td><td>$88 voucher per staff</td><td>Birthday Voucher Redemption Log</td></tr>
+            <tr><td>Uniform</td><td>Issued on joining</td><td>Uniform Tracker</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- AUDIT & COMPLIANCE -->
+    <div class="page" id="page-audit">
+      <div class="page-eyebrow">Standards</div>
+      <div class="page-title">Audit & Compliance</div>
+      <div class="page-desc">Monthly outlet audits, discount compliance, and service standards.</div>
+
+      <div class="section-h">Monthly outlet audit</div>
+      <div class="card">
+        <div style="font-size:13px;color:var(--ink2);line-height:1.6;margin-bottom:12px">The outlet audit covers cleanliness, service standards, product knowledge, and SOP compliance. Target pass rate is ≥90%.</div>
+        <ul class="wiki-list">
+          <li>Audit is conducted monthly and submitted to the ops manager</li>
+          <li>Use the Outlet Audit Marking form</li>
+          <li>Areas scored: cleanliness, service, product knowledge, upselling execution, SOP compliance</li>
+          <li>Any scoring below 90% requires an improvement plan submitted within 7 days</li>
+        </ul>
+      </div>
+
+      <div class="section-h">Discount compliance</div>
+      <div class="card">
+        <ul class="wiki-list">
+          <li>Only apply discounts listed in the Discounts Summary — no exceptions</li>
+          <li>No double discounts — one discount per transaction unless explicitly stated</li>
+          <li>Ensure minimum spend requirements are met before applying any discount</li>
+          <li>Misuse of discounts is a serious compliance breach — flag any suspicious cases</li>
+        </ul>
+      </div>
+
+      <div class="section-h">Petty cash (submit by 25th)</div>
+      <div class="card">
+        <ul class="wiki-list">
+          <li>Record all petty cash expenditure with receipts</li>
+          <li>Submit to Finance Admin (YX) by the 25th of each month</li>
+          <li>No personal expenses — petty cash is for outlet operational needs only</li>
+        </ul>
+      </div>
+
+      <div class="section-h">Food return guidelines</div>
+      <div class="card">
+        <ul class="wiki-list">
+          <li>Follow the Food Return Guidelines document for all food lapse situations</li>
+          <li>Do not promise replacements or refunds without following the guidelines</li>
+          <li>Escalate all serious food complaints to the ops manager</li>
+          <li>Document all incidents — even if resolved on the spot</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- DELIVERY DISPUTES -->
+    <div class="page" id="page-delivery">
+      <div class="page-eyebrow">Delivery</div>
+      <div class="page-title">Delivery Disputes</div>
+      <div class="page-desc">All order cancellations by delivery platforms must be disputed. Use these scripts.</div>
+
+      <div class="info-box red">
+        <strong>Rule:</strong> ALL order cancellations by delivery platforms must be disputed by submitting a dispute report — unless there is clear photo evidence that the cancellation was our fault (e.g. foreign objects in food).
+      </div>
+
+      <div class="info-box blue">
+        <strong>CCTV access for evidence:</strong> RH — contact Danny · JB — contact Owner (YX) · CS — contact Owner (YX)
+      </div>
+
+      <div class="section-h">Dispute scripts — tap to expand</div>
+
+      <div class="dispute-card">
+        <div class="dispute-header" onclick="toggleDispute(this)">1. Missing Item <span>+</span></div>
+        <div class="dispute-body">
+          <div style="font-size:12px;color:var(--ink3);margin-bottom:6px">Before CCTV / without evidence:</div>
+          <div class="dispute-pre">"Please provide evidence of missing items."</div>
+          <div style="font-size:12px;color:var(--ink3);margin:10px 0 6px">With evidence:</div>
+          <div class="dispute-script">"I would like to seek a refund for the following order. We have checked the packing process, and the items were prepared and packed correctly before we handed to the rider. Kindly assist to provide refund to this case." *Attach evidence*</div>
+        </div>
+      </div>
+
+      <div class="dispute-card">
+        <div class="dispute-header" onclick="toggleDispute(this)">2. Wrong Item Sent <span>+</span></div>
+        <div class="dispute-body">
+          <div class="dispute-pre">"Please provide evidence of wrong items."</div>
+          <div style="font-size:12px;color:var(--ink3);margin:10px 0 6px">With evidence:</div>
+          <div class="dispute-script">"I would like to seek a refund for the following order. Based on our check, the dish was prepared according to the order reflected in the system before dispatch. The order was packed and handed to the rider accordingly. Kindly assist to provide a refund to this case." *Attach evidence*</div>
+        </div>
+      </div>
+
+      <div class="dispute-card">
+        <div class="dispute-header" onclick="toggleDispute(this)">3. Missing Sauce / Condiments <span>+</span></div>
+        <div class="dispute-body">
+          <div class="dispute-script">"I would like to seek a refund for the following order. Sauces are packed together but in a separate container as part of our packing checklist before the order is handed to the rider. We have checked with the team and the order was packed accordingly before dispatch. Kindly assist to review this case." *Attach evidence*</div>
+        </div>
+      </div>
+
+      <div class="dispute-card">
+        <div class="dispute-header" onclick="toggleDispute(this)">4. Missing Cutlery / Napkins <span>+</span></div>
+        <div class="dispute-body">
+          <div class="dispute-script">"I would like to seek a refund for the following order. Please note that the complete food order was handed to the rider. Cutlery and napkins are strictly optional, complimentary accessories and are never considered part of the paid menu items. It is disproportionate and unfair for the merchant to bear the cost of a full refund for a completed food order over complimentary accessories. We kindly request that you review this case and reverse the refund charge to our account."</div>
+        </div>
+      </div>
+
+      <div class="dispute-card">
+        <div class="dispute-header" onclick="toggleDispute(this)">5. Spilled / Leaking Items <span>+</span></div>
+        <div class="dispute-body">
+          <div class="dispute-script">"I would like to seek a refund for the following order. The order was packed and sealed before being handed to the rider and the packaging was intact at dispatch. The spillage may have occurred during the delivery process. Kindly assist to provide a refund in this case."</div>
+        </div>
+      </div>
+
+      <div class="dispute-card">
+        <div class="dispute-header" onclick="toggleDispute(this)">6. Foreign Object in Food <span>+</span></div>
+        <div class="dispute-body">
+          <div class="dispute-pre">"Please provide evidence of the foreign object."</div>
+          <div style="font-size:12px;color:var(--ink3);margin:10px 0 6px">With evidence:</div>
+          <div class="dispute-script">"I would like to seek a refund for the following order. We have checked with the kitchen team and reviewed the preparation process. No irregularities were observed during preparation or packing before dispatch. Kindly assist to review this case."</div>
+        </div>
+      </div>
+
+      <div class="dispute-card">
+        <div class="dispute-header" onclick="toggleDispute(this)">7. Food Quality Complaint <span>+</span></div>
+        <div class="dispute-body">
+          <div class="dispute-script">"I would like to seek refund for the following order. The dish was freshly prepared according to our standard recipe and dispatched shortly after cooking. As food quality can be affected by delivery time and handling during transit, we would appreciate your assistance to review this case."</div>
+        </div>
+      </div>
+
+      <div class="dispute-card">
+        <div class="dispute-header" onclick="toggleDispute(this)">8. Late Delivery / Food Cold <span>+</span></div>
+        <div class="dispute-body">
+          <div class="dispute-script">"I would like to seek a refund for the following order. The order was prepared within our usual preparation time and handed to the rider shortly after completion. Delivery timing depends on rider allocation and route. Kindly assist to review this case."</div>
+        </div>
+      </div>
+
+      <div class="dispute-card">
+        <div class="dispute-header" onclick="toggleDispute(this)">9. Customer Ordered Wrongly <span>+</span></div>
+        <div class="dispute-body">
+          <div class="dispute-script">"I would like to seek refund for the following order. We have reviewed the order details and the items prepared match the order submitted through the platform. The order was packed and dispatched accordingly. Kindly assist to review this case."</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOOKOUT RATES -->
+    <div class="page" id="page-bookout">
+      <div class="page-eyebrow">Events</div>
+      <div class="page-title">Bookout Rates</div>
+      <div class="page-desc">Official pricing for full outlet buyouts. Never quote outside these rates without owner approval.</div>
+
+      <div class="info-box amber">
+        These are the minimum rates. Never quote below these figures. All bookout enquiries that deviate from standard rates must be escalated to the owner.
+      </div>
+
+      <div class="section-h">Redhill (RH) — 3 hours</div>
+      <div class="card">
+        <table class="wiki-table">
+          <thead><tr><th>Session</th><th>Weekday</th><th>Weekend</th></tr></thead>
+          <tbody>
+            <tr><td>Lunch (11am–2pm)</td><td>$2,700</td><td>$3,300</td></tr>
+            <tr><td>Dinner (6pm–9pm)</td><td>$3,900</td><td>$4,200</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section-h">Jalan Besar (JB) — 3 hours</div>
+      <div class="card">
+        <table class="wiki-table">
+          <thead><tr><th>Session</th><th>Weekday</th><th>Weekend</th></tr></thead>
+          <tbody>
+            <tr><td>Lunch (11am–2pm)</td><td>$2,900</td><td>$3,300</td></tr>
+            <tr><td>Dinner (6pm–9pm)</td><td>$3,600</td><td>$4,200</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section-h">Century Square (CS) — 3 hours</div>
+      <div class="card">
+        <table class="wiki-table">
+          <thead><tr><th>Session</th><th>Weekday</th><th>Weekend</th></tr></thead>
+          <tbody>
+            <tr><td>Lunch (11am–2pm)</td><td>$3,000</td><td>$5,000</td></tr>
+            <tr><td>Dinner (6pm–9pm)</td><td>$5,000</td><td>$6,000</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- DOCUMENTS -->
+    <div class="page" id="page-docs">
+      <div class="page-eyebrow">Reference</div>
+      <div class="page-title">Document Links</div>
+      <div class="page-desc">All documents relevant to your role as an outlet manager.</div>
+
+      <div class="section-h">Sales tracking</div>
+      <a class="doc-link" href="https://docs.google.com/spreadsheets/d/1FHk_dhqaiv12bsqOVTMmYnwNjSlq2Mp3jPtmzBCK7vY" target="_blank"><span class="doc-icon">📊</span><div><div class="doc-name">Ops Dashboard</div><div class="doc-desc">Daily sales entry</div></div><span class="doc-arrow">↗</span></a>
+      <a class="doc-link" href="https://docs.google.com/spreadsheets/d/1CbOHNVLwOGBEt421Pm38Fjd2EP7sqeyft_R_ESp-Q4M" target="_blank"><span class="doc-icon">📊</span><div><div class="doc-name">Competitor Monitoring</div><div class="doc-desc">Update when not busy</div></div><span class="doc-arrow">↗</span></a>
+
+      <div class="section-h">Stock & ordering</div>
+      <a class="doc-link" href="https://docs.google.com/spreadsheets/d/1pQbvEVcejw8xnNCXKbqJn2U47E4lREhcSlem5vp2iZ0" target="_blank"><span class="doc-icon">📦</span><div><div class="doc-name">Month End Stock Take Form</div><div class="doc-desc">Submit by 5th each month</div></div><span class="doc-arrow">↗</span></a>
+      <a class="doc-link" href="https://docs.google.com/spreadsheets/d/1njpkdw9wyJb2KC-YElHz1LR9DNYj7Dg7n0xfU5TngOo" target="_blank"><span class="doc-icon">📦</span><div><div class="doc-name">Stock Movement Form</div><div class="doc-desc">Submit by 5th each month</div></div><span class="doc-arrow">↗</span></a>
+      <a class="doc-link" href="https://docs.google.com/spreadsheets/d/1a-jVVoT9Ux5btMMi6CxmS5Dn0bMTYlX3HwxGBlxuQx4" target="_blank"><span class="doc-icon">📦</span><div><div class="doc-name">Ordering Groupchat Purchase Lists</div><div class="doc-desc">Par levels and supplier list</div></div><span class="doc-arrow">↗</span></a>
+
+      <div class="section-h">Staff & HR</div>
+      <a class="doc-link" href="https://docs.google.com/spreadsheets/d/1974RV8U8pE3OogleDtFDBBWEnUNBXPY7uwVxzlCmazM" target="_blank"><span class="doc-icon">👥</span><div><div class="doc-name">Monthly Schedule</div><div class="doc-desc">Submit by 15th each month</div></div><span class="doc-arrow">↗</span></a>
+      <a class="doc-link" href="https://docs.google.com/spreadsheets/d/1TLlAukITEYc1uXxBHKkgx4kvddgpOfXR6IEV1RJ1Kaw" target="_blank"><span class="doc-icon">👥</span><div><div class="doc-name">Leave Block Out</div><div class="doc-desc">Leave approval tracking</div></div><span class="doc-arrow">↗</span></a>
+      <a class="doc-link" href="https://docs.google.com/spreadsheets/d/1pedP5G4-Y2l_QNcqQVPBDYA3JoAye7PAS5QAA4EoL-E" target="_blank"><span class="doc-icon">👥</span><div><div class="doc-name">Part-time Rate Legend</div><div class="doc-desc">Pay rates and availability</div></div><span class="doc-arrow">↗</span></a>
+      <a class="doc-link" href="https://docs.google.com/spreadsheets/d/1stdlnEABFcwln9Z7W2kT3_ahzayGIdFGuXTO8IWVStM" target="_blank"><span class="doc-icon">👥</span><div><div class="doc-name">Staff Free Meal Log</div><div class="doc-desc">Monthly meal entitlement tracking</div></div><span class="doc-arrow">↗</span></a>
+      <a class="doc-link" href="https://docs.google.com/spreadsheets/d/1kLQspjUJa0aH6H4KesfPH50ULHPQIHkGAlf9GaK6liQ" target="_blank"><span class="doc-icon">👥</span><div><div class="doc-name">Birthday Voucher Log</div><div class="doc-desc">$88 staff birthday voucher tracking</div></div><span class="doc-arrow">↗</span></a>
+
+      <div class="section-h">Training & SOPs</div>
+      <a class="doc-link" href="https://docs.google.com/document/d/1vADO5LOfSS2NL9cZjhwW4fagZxLgTceWyB0h7oKw5e4" target="_blank"><span class="doc-icon">📖</span><div><div class="doc-name">Abundance Training (Onboarding)</div><div class="doc-desc">Complete within 2 months of joining</div></div><span class="doc-arrow">↗</span></a>
+      <a class="doc-link" href="https://docs.google.com/presentation/d/1F60kMx4G9EFrLFiJgEydfiiU0U-YiA95GY4vtoexGDI" target="_blank"><span class="doc-icon">📖</span><div><div class="doc-name">Food Product Knowledge (EN)</div><div class="doc-desc">Run food tastings with this deck</div></div><span class="doc-arrow">↗</span></a>
+      <a class="doc-link" href="https://docs.google.com/presentation/d/1tXo9tB_YMPyeevwGKqwl_xnDF4SrI3tz0dO8bcP962Y" target="_blank"><span class="doc-icon">📖</span><div><div class="doc-name">Food Product Knowledge (中文)</div><div class="doc-desc">Chinese version</div></div><span class="doc-arrow">↗</span></a>
+      <a class="doc-link" href="https://docs.google.com/spreadsheets/d/16V3co6Rjg7u54u0ktKrPDioceNJzCFhfDN2GQKkxCzk" target="_blank"><span class="doc-icon">📖</span><div><div class="doc-name">Product Knowledge Tracker</div><div class="doc-desc">Track staff training progress</div></div><span class="doc-arrow">↗</span></a>
+      <a class="doc-link" href="https://docs.google.com/document/d/1VAnzLjd4v4u1p-9QgMX1W-TuIs89p7GPqCmP0iXurIA" target="_blank"><span class="doc-icon">📖</span><div><div class="doc-name">Upselling SOP</div><div class="doc-desc">Fixed upselling standard — not left to chance</div></div><span class="doc-arrow">↗</span></a>
+      <a class="doc-link" href="https://docs.google.com/spreadsheets/d/180fBpyDDky7Hywwacm3EzcN_A2LkYG_Hn4DozexPahg" target="_blank"><span class="doc-icon">📖</span><div><div class="doc-name">Discounts Summary</div><div class="doc-desc">All approved discounts — no exceptions outside this list</div></div><span class="doc-arrow">↗</span></a>
+      <a class="doc-link" href="https://docs.google.com/document/d/1XDRrRg1xi25_oG5COjjPxu5l3Y5HXrMU5QB14eJz9iw" target="_blank"><span class="doc-icon">📖</span><div><div class="doc-name">Food Return Guidelines</div><div class="doc-desc">What to do when food lapses occur</div></div><span class="doc-arrow">↗</span></a>
+      <a class="doc-link" href="https://docs.google.com/document/d/1eKy-vVVgUFdyMtmUODKUMekghlBnBJbEz3UD-wEssUY" target="_blank"><span class="doc-icon">📖</span><div><div class="doc-name">WiFi Contingency</div><div class="doc-desc">First steps during WiFi breakdown</div></div><span class="doc-arrow">↗</span></a>
+    </div>
+
+  </div>
+</main>
+
+<script>
+const titles = { role:'Your Role & KPIs', deadlines:'Monthly Deadlines', sales:'Sales & Revenue', stock:'Stock & Ordering', staff:'Staff Management', audit:'Audit & Compliance', delivery:'Delivery Disputes', bookout:'Bookout Rates', docs:'Document Links' };
+function nav(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  document.getElementById('topbar-title').textContent = titles[id];
+  window.scrollTo(0, 0);
+}
+function toggleDispute(el) {
+  const body = el.nextElementSibling;
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open');
+  el.querySelector('span').textContent = isOpen ? '+' : '−';
+}
+</script>
+</body>
+</html>

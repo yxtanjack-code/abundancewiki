@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abundance — Directors Playbook</title>
+<style>
+:root {
+  --bg: #0E0D0C;
+  --surface: #161512;
+  --border: #2A2720;
+  --text: #E8E2D9;
+  --text2: #9A9086;
+  --text3: #5A5248;
+  --accent: #C8A96E;
+  --accent2: #8B6C3E;
+  --teal: #4AADA0;
+  --red: #D4614A;
+  --blue: #5B8FCC;
+  --sidebar: 280px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Georgia', serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: var(--sidebar);
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+}
+
+.sidebar-brand {
+  padding: 32px 28px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.brand-initial {
+  width: 36px; height: 36px;
+  background: var(--accent);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Georgia', serif;
+  font-size: 18px;
+  color: #0E0D0C;
+  margin-bottom: 14px;
+}
+
+.brand-name {
+  font-size: 14px;
+  font-weight: normal;
+  color: var(--text);
+  line-height: 1.4;
+  font-family: 'Georgia', serif;
+  letter-spacing: 0.3px;
+}
+
+.brand-sub {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 4px;
+  font-family: -apple-system, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.level-tag {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 10px;
+  font-family: -apple-system, sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--accent);
+  border: 1px solid var(--accent2);
+  padding: 2px 8px;
+  border-radius: 3px;
+}
+
+.nav { padding: 20px 0; flex: 1; }
+
+.nav-group { margin-bottom: 8px; }
+
+.nav-group-label {
+  font-size: 10px;
+  font-family: -apple-system, sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--text3);
+  padding: 8px 28px 4px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 7px 28px;
+  font-size: 13px;
+  font-family: -apple-system, sans-serif;
+  color: var(--text2);
+  cursor: pointer;
+  transition: color 0.15s;
+  border-left: 2px solid transparent;
+  line-height: 1.4;
+}
+
+.nav-item:hover { color: var(--text); }
+.nav-item.active { color: var(--text); border-left-color: var(--accent); }
+
+.nav-num {
+  font-size: 11px;
+  color: var(--text3);
+  min-width: 20px;
+  font-family: -apple-system, sans-serif;
+}
+
+.sidebar-footer {
+  padding: 16px 28px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  font-family: -apple-system, sans-serif;
+  color: var(--text3);
+}
+
+/* MAIN */
+.main { margin-left: var(--sidebar); flex: 1; max-width: 860px; padding: 64px 72px; }
+
+/* PAGE */
+.page { display: none; }
+.page.active { display: block; }
+
+.page-num {
+  font-size: 11px;
+  font-family: -apple-system, sans-serif;
+  color: var(--text3);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.page-title {
+  font-size: 36px;
+  font-weight: normal;
+  color: var(--text);
+  line-height: 1.2;
+  margin-bottom: 10px;
+  letter-spacing: -0.5px;
+}
+
+.page-desc {
+  font-size: 15px;
+  color: var(--text2);
+  line-height: 1.75;
+  margin-bottom: 48px;
+  max-width: 600px;
+}
+
+hr.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 36px 0;
+}
+
+/* Headings inside pages */
+.h2 {
+  font-size: 12px;
+  font-family: -apple-system, sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--text3);
+  margin: 36px 0 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Body text */
+p.body { font-size: 15px; color: var(--text2); line-height: 1.8; margin-bottom: 16px; }
+
+/* Block */
+.block {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin-bottom: 14px;
+  background: var(--surface);
+}
+
+.block-title {
+  font-size: 14px;
+  font-weight: normal;
+  font-family: -apple-system, sans-serif;
+  color: var(--text);
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.block-sub {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.65;
+}
+
+/* Accent block */
+.ablock {
+  border-left: 2px solid var(--accent);
+  padding: 14px 20px;
+  margin-bottom: 12px;
+  background: rgba(200,169,110,0.05);
+  border-radius: 0 6px 6px 0;
+}
+
+.ablock.teal { border-left-color: var(--teal); background: rgba(74,173,160,0.05); }
+.ablock.red { border-left-color: var(--red); background: rgba(212,97,74,0.05); }
+.ablock.blue { border-left-color: var(--blue); background: rgba(91,143,204,0.05); }
+
+.ablock-label {
+  font-size: 11px;
+  font-family: -apple-system, sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+
+.ablock.teal .ablock-label { color: var(--teal); }
+.ablock.red .ablock-label { color: var(--red); }
+.ablock.blue .ablock-label { color: var(--blue); }
+
+.ablock-text {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.7;
+}
+
+/* List */
+ul.plist { list-style: none; padding: 0; }
+ul.plist li {
+  font-size: 14px;
+  color: var(--text2);
+  padding: 5px 0 5px 18px;
+  position: relative;
+  line-height: 1.6;
+}
+ul.plist li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--text3);
+  font-size: 12px;
+}
+
+/* Table */
+.ptable { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-family: -apple-system, sans-serif; }
+.ptable th {
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text3);
+  border-bottom: 1px solid var(--border);
+}
+.ptable td {
+  padding: 12px 14px;
+  font-size: 13px;
+  color: var(--text2);
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  line-height: 1.55;
+}
+.ptable tr:last-child td { border-bottom: none; }
+.ptable tr:hover td { background: rgba(255,255,255,0.02); }
+
+/* KPI row */
+.krow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  font-family: -apple-system, sans-serif;
+}
+.krow:last-child { border-bottom: none; }
+.krow-name { font-size: 14px; color: var(--text2); }
+.krow-val {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--accent);
+  border: 1px solid var(--accent2);
+  padding: 2px 10px;
+  border-radius: 3px;
+}
+.krow-tbd { font-size: 13px; color: var(--text3); font-style: italic; }
+
+/* Doc link */
+.dlink {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  margin-bottom: 8px;
+  text-decoration: none;
+  transition: border-color 0.15s;
+}
+.dlink:hover { border-color: var(--text3); }
+.dlink-icon { font-size: 16px; flex-shrink: 0; }
+.dlink-info { flex: 1; }
+.dlink-name { font-size: 13px; font-weight: 500; font-family: -apple-system, sans-serif; color: var(--text); }
+.dlink-desc { font-size: 11px; color: var(--text3); margin-top: 2px; font-family: -apple-system, sans-serif; }
+.dlink-arr { font-size: 14px; color: var(--text3); }
+
+/* Tag */
+.tag {
+  display: inline-block;
+  font-size: 10px;
+  font-family: -apple-system, sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 7px;
+  border-radius: 3px;
+  border: 1px solid;
+}
+.tag-gold { color: var(--accent); border-color: var(--accent2); }
+.tag-teal { color: var(--teal); border-color: #2A6B66; }
+.tag-red  { color: var(--red);  border-color: #7A3A2E; }
+.tag-gray { color: var(--text3); border-color: var(--border); }
+
+/* Grid */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+
+/* Agenda row */
+.arow { display: flex; gap: 20px; margin-bottom: 20px; font-family: -apple-system, sans-serif; }
+.arow-time { flex-shrink: 0; width: 60px; text-align: right; }
+.arow-t { font-size: 12px; font-weight: 600; color: var(--accent); }
+.arow-o { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.arow-line { width: 1.5px; background: var(--border); flex-shrink: 0; border-radius: 2px; }
+.arow-body { flex: 1; padding-bottom: 4px; }
+.arow-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+.arow-desc { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+/* Warning */
+.warn {
+  background: rgba(212,97,74,0.08);
+  border: 1px solid #7A3A2E;
+  border-radius: 7px;
+  padding: 14px 18px;
+  font-size: 13px;
+  font-family: -apple-system, sans-serif;
+  color: #D4614A;
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+/* Info */
+.info {
+  background: rgba(74,173,160,0.08);
+  border: 1px solid #2A6B66;
+  border-radius: 7px;
+  padding: 14px 18px;
+  font-size: 13px;
+  font-family: -apple-system, sans-serif;
+  color: var(--teal);
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+.note {
+  background: rgba(200,169,110,0.08);
+  border: 1px solid var(--accent2);
+  border-radius: 7px;
+  padding: 14px 18px;
+  font-size: 13px;
+  font-family: -apple-system, sans-serif;
+  color: var(--accent);
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-initial">A</div>
+    <div class="brand-name">Abundance Taiwanese Restaurant</div>
+    <div class="brand-sub">Internal Playbook</div>
+    <div class="level-tag">Directors Access</div>
+  </div>
+
+  <nav class="nav">
+    <div class="nav-group">
+      <div class="nav-group-label">Overview</div>
+      <div class="nav-item active" onclick="go('brand')"><span class="nav-num">01</span>Brand & Story</div>
+      <div class="nav-item" onclick="go('org')"><span class="nav-num">02</span>Org Structure</div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Leadership</div>
+      <div class="nav-item" onclick="go('kpis')"><span class="nav-num">03</span>Director KPIs</div>
+      <div class="nav-item" onclick="go('meetings')"><span class="nav-num">04</span>Meeting Cadence</div>
+      <div class="nav-item" onclick="go('pnl')"><span class="nav-num">05</span>P&L Framework</div>
+      <div class="nav-item" onclick="go('reset')"><span class="nav-num">06</span>Reset Conversation</div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Operations</div>
+      <div class="nav-item" onclick="go('outlets')"><span class="nav-num">07</span>Outlets Overview</div>
+      <div class="nav-item" onclick="go('responsibilities')"><span class="nav-num">08</span>Responsibilities</div>
+      <div class="nav-item" onclick="go('hiring')"><span class="nav-num">09</span>Hiring Plan</div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Reference</div>
+      <div class="nav-item" onclick="go('docs')"><span class="nav-num">10</span>Master Doc List</div>
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">Last updated · April 2026</div>
+</aside>
+
+<main class="main">
+
+  <!-- 01 BRAND -->
+  <div class="page active" id="p-brand">
+    <div class="page-num">01 — Overview</div>
+    <div class="page-title">Brand & Story</div>
+    <div class="page-desc">Why Abundance exists, what we stand for, and the foundation everything else is built on.</div>
+
+    <div class="ablock teal">
+      <div class="ablock-label">Our positioning</div>
+      <div class="ablock-text">"A spot where Taiwanese soulful cuisine meets Singapore's cravings."</div>
+    </div>
+
+    <div class="h2">Our story</div>
+    <p class="body">Abundance was born from a simple belief — that Taiwanese cuisine deserved a proper home in Singapore. Not a hawker stall, not a mall chain, but a real space where people could experience the soul of Taiwan: bold flavours, generous portions, cold beer, and the kind of warmth that makes you want to stay a little longer.</p>
+    <p class="body">We serve Taiwanese fusion cuisine alongside craft beer and cocktails — because great food is always better with a great drink. We didn't start Abundance to run a restaurant. We started it to create a place people genuinely love to be in.</p>
+
+    <div class="h2">What we stand for</div>
+    <div class="grid2">
+      <div class="block"><div class="block-title">Soulful food</div><div class="block-sub">Every dish should feel made with intention. Not just filling — memorable.</div></div>
+      <div class="block"><div class="block-title">Great time, every time</div><div class="block-sub">The experience matters as much as the food. Guests leave happier than they arrived.</div></div>
+      <div class="block"><div class="block-title">Consistency across outlets</div><div class="block-sub">RH, JB, or CS — the guest gets the same Abundance experience.</div></div>
+      <div class="block"><div class="block-title">Scalable with soul</div><div class="block-sub">As we grow, we protect what makes us special. Scale doesn't mean generic.</div></div>
+    </div>
+
+    <div class="h2">Current footprint</div>
+    <table class="ptable">
+      <thead><tr><th>Outlet</th><th>Code</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Redhill</td><td>RH</td><td>Operating</td></tr>
+        <tr><td>Jalan Besar</td><td>JB</td><td>Operating</td></tr>
+        <tr><td>Century Square</td><td>CS</td><td>Operating</td></tr>
+        <tr><td>Central Kitchen</td><td>CK</td><td>Operating</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note">Growth target: scaling to 5–6 outlets. New outlet format: casual dining, ~1,000 sqft, fully replicable model.</div>
+  </div>
+
+  <!-- 02 ORG -->
+  <div class="page" id="p-org">
+    <div class="page-num">02 — Overview</div>
+    <div class="page-title">Org Structure</div>
+    <div class="page-desc">Who owns what, who reports to who, and where we're headed.</div>
+
+    <div class="warn">⚠ Current state: all functions report directly to the owner. No ops buffer exists. Jaz and Eddie RACI is unclear. No per-outlet labour cost tracking.</div>
+
+    <div class="h2">Target org — director seats (all report to Owner/CEO)</div>
+    <table class="ptable">
+      <thead><tr><th>Seat</th><th>Function</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Operations Manager</strong></td><td>Outlet P&L, team dev, SOP governance, new outlet execution</td><td><span class="tag tag-red">Critical hire now</span></td></tr>
+        <tr><td><strong>Culinary Director</strong></td><td>Menu R&D, food cost, quality standards, product training</td><td><span class="tag tag-teal">Filled</span></td></tr>
+        <tr><td><strong>CK Manager</strong></td><td>CK ops, production scheduling, Jackson & Jie management</td><td><span class="tag tag-teal">Filled</span></td></tr>
+        <tr><td><strong>Finance & HR Lead</strong></td><td>P&L, financial controls, HR strategy, Sam & bookkeeper oversight</td><td><span class="tag tag-gold">Hire at 4–5 outlets</span></td></tr>
+        <tr><td><strong>Marketing Manager</strong></td><td>Marketing calendar, agency management, campaigns</td><td><span class="tag tag-gray">Hire at 5+ outlets</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="h2">Reporting lines — target state</div>
+    <table class="ptable">
+      <thead><tr><th>Role</th><th>Reports to</th><th>Direct reports</th></tr></thead>
+      <tbody>
+        <tr><td>Operations Manager</td><td>Owner / CEO</td><td>All outlet managers</td></tr>
+        <tr><td>Culinary Director</td><td>Owner / CEO</td><td>—</td></tr>
+        <tr><td>CK Manager</td><td>Owner / CEO</td><td>Jackson, Jie (Kitchen In-Charge)</td></tr>
+        <tr><td>Finance & HR Lead</td><td>Owner / CEO</td><td>Finance Admin (Sam), Bookkeeper</td></tr>
+        <tr><td>Marketing Manager</td><td>Owner / CEO</td><td>Agencies</td></tr>
+        <tr><td>Outlet Manager</td><td>Operations Manager</td><td>Service crew, supervisors</td></tr>
+        <tr><td>Kitchen In-Charge</td><td>CK Manager</td><td>Outlet kitchen crew</td></tr>
+        <tr><td>Finance Admin (Sam)</td><td>Finance & HR Lead</td><td>—</td></tr>
+      </tbody>
+    </table>
+
+    <div class="h2">Hire sequence</div>
+    <div class="ablock"><div class="ablock-label">1 — Now</div><div class="ablock-text">Operations Manager — before opening outlet 4. Up to $8,000/month. F&B multi-outlet experience required.</div></div>
+    <div class="ablock teal"><div class="ablock-label">2 — At 4–5 outlets</div><div class="ablock-text">Finance & HR Lead — when financial complexity demands a senior person above Sam.</div></div>
+    <div class="ablock blue"><div class="ablock-label">3 — At 5+ outlets</div><div class="ablock-text">Marketing Manager — when campaign volume and agency coordination becomes full-time.</div></div>
+  </div>
+
+  <!-- 03 KPIs -->
+  <div class="page" id="p-kpis">
+    <div class="page-num">03 — Leadership</div>
+    <div class="page-title">Director KPIs</div>
+    <div class="page-desc">What each seat is measured on. Reviewed monthly at the P&L meeting and weekly in director updates.</div>
+
+    <div class="h2">Operations Manager</div>
+    <div class="block">
+      <div class="krow"><span class="krow-name">Outlet EBITDA %</span><span class="krow-tbd">Set target</span></div>
+      <div class="krow"><span class="krow-name">Labour cost % per outlet</span><span class="krow-tbd">Set target</span></div>
+      <div class="krow"><span class="krow-name">Google review avg score</span><span class="krow-tbd">Set target</span></div>
+      <div class="krow"><span class="krow-name">SOP audit pass rate</span><span class="krow-val">≥90%</span></div>
+      <div class="krow"><span class="krow-name">Outlet manager retention</span><span class="krow-tbd">Track</span></div>
+      <div class="krow"><span class="krow-name">New outlet on-time launch</span><span class="krow-tbd">Track</span></div>
+    </div>
+
+    <div class="h2">Culinary Director</div>
+    <div class="block">
+      <div class="krow"><span class="krow-name">Food cost % (ongoing)</span><span class="krow-val">≤25%</span></div>
+      <div class="krow"><span class="krow-name">Inventory variance rate</span><span class="krow-tbd">Set target</span></div>
+      <div class="krow"><span class="krow-name">Menu launches per year</span><span class="krow-tbd">Set target</span></div>
+      <div class="krow"><span class="krow-name">Product training completion</span><span class="krow-val">100%</span></div>
+      <div class="krow"><span class="krow-name">Quality audit score</span><span class="krow-tbd">Set target</span></div>
+    </div>
+
+    <div class="h2">CK Manager</div>
+    <div class="block">
+      <div class="krow"><span class="krow-name">CK fulfilment rate</span><span class="krow-val">≥98%</span></div>
+      <div class="krow"><span class="krow-name">Production on-time %</span><span class="krow-val">≥95%</span></div>
+      <div class="krow"><span class="krow-name">Wastage % vs target</span><span class="krow-tbd">Set target</span></div>
+      <div class="krow"><span class="krow-name">Kitchen SOP audit score</span><span class="krow-val">≥90%</span></div>
+    </div>
+
+    <div class="h2">Outlet Managers (managed by Ops Manager)</div>
+    <div class="block">
+      <div class="krow"><span class="krow-name">Sales vs target</span><span class="krow-tbd">Track</span></div>
+      <div class="krow"><span class="krow-name">Drinks per customer</span><span class="krow-val">≥80%</span></div>
+      <div class="krow"><span class="krow-name">Dessert per transaction</span><span class="krow-val">≥75%</span></div>
+      <div class="krow"><span class="krow-name">Google review score</span><span class="krow-tbd">Track</span></div>
+      <div class="krow"><span class="krow-name">Labour cost % per outlet</span><span class="krow-tbd">Set target</span></div>
+    </div>
+  </div>
+
+  <!-- 04 MEETINGS -->
+  <div class="page" id="p-meetings">
+    <div class="page-num">04 — Leadership</div>
+    <div class="page-title">Meeting Cadence</div>
+    <div class="page-desc">How we align, decide, and hold each other accountable without wasting time.</div>
+
+    <div class="info">Design principle: kitchen operational discussions go to the Jaz + Eddie sync. The directors meeting is for business performance, decisions, and forward planning only.</div>
+
+    <div class="h2">Weekly Directors Meeting — 60 min</div>
+    <div class="arow"><div class="arow-time"><div class="arow-t">0–5</div><div class="arow-o">Owner</div></div><div class="arow-line"></div><div class="arow-body"><div class="arow-title">Numbers check-in</div><div class="arow-desc">Last week's revenue vs target across all outlets. Facts on the table — no discussion yet.</div></div></div>
+    <div class="arow"><div class="arow-time"><div class="arow-t">5–20</div><div class="arow-o">Each director</div></div><div class="arow-line"></div><div class="arow-body"><div class="arow-title">Director updates</div><div class="arow-desc">Each person shares: one metric, one problem, one thing planned ahead. No preparation = no airtime.</div></div></div>
+    <div class="arow"><div class="arow-time"><div class="arow-t">20–40</div><div class="arow-o">Owner leads</div></div><div class="arow-line"></div><div class="arow-body"><div class="arow-title">Focus topic of the week</div><div class="arow-desc">One topic goes deep. Rotate who brings it. This is where strategic thinking happens.</div></div></div>
+    <div class="arow"><div class="arow-time"><div class="arow-t">40–55</div><div class="arow-o">All</div></div><div class="arow-line"></div><div class="arow-body"><div class="arow-title">Decisions & actions</div><div class="arow-desc">Every action gets one owner and one deadline. Not "we" and not "soon".</div></div></div>
+    <div class="arow"><div class="arow-time"><div class="arow-t">55–60</div><div class="arow-o">Owner</div></div><div class="arow-line"></div><div class="arow-body"><div class="arow-title">Close & preview</div><div class="arow-desc">Next week's focus topic confirmed. Who's bringing it?</div></div></div>
+
+    <div class="h2">Meeting rules</div>
+    <ul class="plist">
+      <li>Agenda sent by owner 24hrs before — directors come prepared</li>
+      <li>No kitchen operational discussions — those go to the Jaz + Eddie sync</li>
+      <li>Every action item has one owner and one deadline</li>
+      <li>Directors bring solutions, not just problems</li>
+      <li>If someone hasn't prepared, meeting still runs — it's noted</li>
+    </ul>
+
+    <div class="h2">Monthly P&L Review — 30 min</div>
+    <div class="arow"><div class="arow-time"><div class="arow-t">0–5</div><div class="arow-o">Owner</div></div><div class="arow-line"></div><div class="arow-body"><div class="arow-title">Revenue summary</div><div class="arow-desc">Total vs last month and vs target. Outlet breakdown.</div></div></div>
+    <div class="arow"><div class="arow-time"><div class="arow-t">5–10</div><div class="arow-o">Culinary Dir</div></div><div class="arow-line"></div><div class="arow-body"><div class="arow-title">Food cost report</div><div class="arow-desc">Must come with a view on why it moved, not just the number.</div></div></div>
+    <div class="arow"><div class="arow-time"><div class="arow-t">10–15</div><div class="arow-o">Owner / Ops Mgr</div></div><div class="arow-line"></div><div class="arow-body"><div class="arow-title">Labour cost review</div><div class="arow-desc">Per outlet once tracking is in place. Flag overtime patterns.</div></div></div>
+    <div class="arow"><div class="arow-time"><div class="arow-t">15–25</div><div class="arow-o">All</div></div><div class="arow-line"></div><div class="arow-body"><div class="arow-title">Gross profit & key variances</div><div class="arow-desc">Walk through GP together. Each director commits to one action to improve next month.</div></div></div>
+    <div class="arow"><div class="arow-time"><div class="arow-t">25–30</div><div class="arow-o">Owner</div></div><div class="arow-line"></div><div class="arow-body"><div class="arow-title">Close</div><div class="arow-desc">One key focus for next month. Everyone aligned.</div></div></div>
+
+    <div class="h2">Kitchen Ops Sync — weekly 30 min (Culinary Director + CK Manager only)</div>
+    <ul class="plist">
+      <li>Production issues and fulfilment gaps</li>
+      <li>Inventory and ordering coordination</li>
+      <li>Menu launch kitchen prep</li>
+      <li>Jackson and Jie deployment</li>
+    </ul>
+    <div class="ablock red"><div class="ablock-label">Note</div><div class="ablock-text">Owner does not attend. Forces them to resolve issues between themselves rather than using your time to mediate.</div></div>
+  </div>
+
+  <!-- 05 P&L -->
+  <div class="page" id="p-pnl">
+    <div class="page-num">05 — Leadership</div>
+    <div class="page-title">P&L Framework</div>
+    <div class="page-desc">How to read the monthly P&L systematically. What each line means and who owns it.</div>
+
+    <div class="info">Purpose: not to punish — to create visibility. When the Culinary Director sees food cost trending up, that's their problem to fix. The P&L makes ownership visible.</div>
+
+    <div class="h2">Reading the P&L — top to bottom</div>
+
+    <div class="ablock teal">
+      <div class="ablock-label">1. Revenue</div>
+      <div class="ablock-text">Total vs last month and same month last year · Dine-in vs delivery split · Revenue per outlet — which is leading, which is lagging · Average spend per customer</div>
+    </div>
+
+    <div class="ablock">
+      <div class="ablock-label">2. Food Cost (COGS) — Owner: Culinary Director</div>
+      <div class="ablock-text">Food cost % = COGS ÷ Revenue. Target ≤25% · Compare to last month — higher or lower, and why · Which categories driving cost: protein, beverages, packaging · Variance between invoiced cost and actual usage = wastage signal</div>
+    </div>
+
+    <div class="ablock blue">
+      <div class="ablock-label">3. Labour Cost — Owner: Operations Manager</div>
+      <div class="ablock-text">Labour % = Payroll ÷ Revenue. Healthy F&B range: 25–35% · Track per outlet once payroll splits · Overstaffed on slow days, understaffed on peak days · Overtime: recurring or one-off?</div>
+    </div>
+
+    <div class="ablock teal">
+      <div class="ablock-label">4. Gross Profit</div>
+      <div class="ablock-text">GP = Revenue − Food Cost − Labour Cost · Track GP % month on month · If GP is shrinking: is revenue down, food cost up, or labour up?</div>
+    </div>
+
+    <div class="ablock">
+      <div class="ablock-label">5. Operating Expenses</div>
+      <div class="ablock-text">Rent — fixed, but right % of revenue? · Utilities — spikes? · Marketing spend — did it drive revenue? · Delivery platform fees and packaging</div>
+    </div>
+
+    <div class="ablock red">
+      <div class="ablock-label">6. Net Profit</div>
+      <div class="ablock-text">Net Profit = GP − Operating Expenses · SG casual dining benchmark: 10–15% healthy · below 8% needs attention · below 5% is a warning sign · Is it healthy enough to fund the next outlet?</div>
+    </div>
+  </div>
+
+  <!-- 06 RESET -->
+  <div class="page" id="p-reset">
+    <div class="page-num">06 — Leadership</div>
+    <div class="page-title">Reset Conversation</div>
+    <div class="page-desc">The conversation to have with directors before introducing any new system. Have this first — the system has no foundation without it.</div>
+
+    <div class="warn">⚠ Do this before introducing new meeting structures or KPIs. Without this reset, nothing else lands.</div>
+
+    <div class="h2">Step-by-step script</div>
+
+    <div class="ablock teal">
+      <div class="ablock-label">1 — Open with growth context, not the problem</div>
+      <div class="ablock-text">"I want to have an honest conversation today — not about a problem, but about where we're going. We're planning to scale Abundance from 3 outlets to more. That's exciting, but it means we all need to grow into our roles. What got us here won't get us there."</div>
+    </div>
+
+    <div class="ablock">
+      <div class="ablock-label">2 — Name what director-level means at the next stage</div>
+      <div class="ablock-text">"At this stage, I need each of you to be the CEO of your function. Jaz — you own culinary, quality, and food cost end to end. Not just during R&D, but every month. Eddie — you own how the kitchen runs, the numbers, and the team. I need you both to come to me with insights and problems — not wait for me to find them."</div>
+    </div>
+
+    <div class="ablock blue">
+      <div class="ablock-label">3 — Name the gap, gently but directly</div>
+      <div class="ablock-text">"Right now, our directors meeting ends up being mostly kitchen discussions. I need more from both of you — thinking beyond the next menu launch. Food cost trends, team performance, what's working and what's not. I haven't made this expectation clear enough before, and that's on me. But I'm making it clear now."</div>
+    </div>
+
+    <div class="ablock teal">
+      <div class="ablock-label">4 — Invite them in, don't just impose</div>
+      <div class="ablock-text">"What would help you step into this? What do you need from me to think more strategically about your area? I'm not here to pile more on you. I want to build this together."</div>
+    </div>
+
+    <div class="ablock">
+      <div class="ablock-label">5 — Close with the new structure</div>
+      <div class="ablock-text">"Starting next week, I want to change how we run our directors meeting. Each of us will come prepared with our numbers, one problem we're facing, and one thing we're planning ahead. And once a month, we'll review the P&L together — I'll walk you through how to read it."</div>
+    </div>
+
+    <div class="h2">Watch out for</div>
+    <ul class="plist">
+      <li>Jaz may go quiet — he processes internally. Give him space after the conversation</li>
+      <li>Eddie may agree in the room but struggle to follow through — the new meeting structure will surface this quickly</li>
+      <li>Don't let the conversation drift into kitchen topics — keep redirecting to the bigger picture</li>
+      <li>If either gets defensive, acknowledge their contribution first before re-anchoring to expectations</li>
+    </ul>
+  </div>
+
+  <!-- 07 OUTLETS -->
+  <div class="page" id="p-outlets">
+    <div class="page-num">07 — Operations</div>
+    <div class="page-title">Outlets Overview</div>
+    <div class="page-desc">Key information for each outlet including bookout rates and operational contacts.</div>
+
+    <div class="h2">Redhill (RH)</div>
+    <div class="block">
+      <table class="ptable">
+        <thead><tr><th>Session</th><th>Weekday</th><th>Weekend</th></tr></thead>
+        <tbody>
+          <tr><td>Lunch (11am–2pm)</td><td>$2,700</td><td>$3,300</td></tr>
+          <tr><td>Dinner (6pm–9pm)</td><td>$3,900</td><td>$4,200</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:13px;color:var(--text3);font-family:-apple-system,sans-serif;margin-top:8px">CCTV: contact Danny · Weekday lunch avg ~$1.4K, peaks $2.2K · Dinner avg ~$2.0K, peaks $3.3K</div>
+    </div>
+
+    <div class="h2">Jalan Besar (JB)</div>
+    <div class="block">
+      <table class="ptable">
+        <thead><tr><th>Session</th><th>Weekday</th><th>Weekend</th></tr></thead>
+        <tbody>
+          <tr><td>Lunch (11am–2pm)</td><td>$2,900</td><td>$3,300</td></tr>
+          <tr><td>Dinner (6pm–9pm)</td><td>$3,600</td><td>$4,200</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:13px;color:var(--text3);font-family:-apple-system,sans-serif;margin-top:8px">CCTV: contact Owner (YX) · Weekday lunch peaks ~$2.45K · Dinner consistently ~$3.0K</div>
+    </div>
+
+    <div class="h2">Century Square (CS)</div>
+    <div class="block">
+      <table class="ptable">
+        <thead><tr><th>Session</th><th>Weekday</th><th>Weekend</th></tr></thead>
+        <tbody>
+          <tr><td>Lunch (11am–2pm)</td><td>$3,000</td><td>$5,000</td></tr>
+          <tr><td>Dinner (6pm–9pm)</td><td>$5,000</td><td>$6,000</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:13px;color:var(--text3);font-family:-apple-system,sans-serif;margin-top:8px">CCTV: contact Owner (YX) · Capacity ~66–70 seats · Weekday dinner peaks ~$4.1K · Weekend dinner peaks ~$4.6K</div>
+    </div>
+
+    <div class="h2">Bookout pricing rationale</div>
+    <ul class="plist">
+      <li>Priced above peak performance — exclusivity premium applies</li>
+      <li>Loss of revenue upside from walk-ins, upselling, and table turnover under normal ops</li>
+      <li>Private events require higher manpower and reduce service efficiency</li>
+      <li>3-hour booking affects adjacent service windows</li>
+      <li>Standard buyout benchmark: +15% to +30% above expected peak revenue</li>
+    </ul>
+  </div>
+
+  <!-- 08 RESPONSIBILITIES -->
+  <div class="page" id="p-responsibilities">
+    <div class="page-num">08 — Operations</div>
+    <div class="page-title">Responsibilities & Deadlines</div>
+    <div class="page-desc">Monthly reporting deadlines and functional ownership across the business.</div>
+
+    <div class="h2">Monthly reporting flow</div>
+    <table class="ptable">
+      <thead><tr><th>Deadline</th><th>Report</th><th>Owner</th></tr></thead>
+      <tbody>
+        <tr><td>1st</td><td>Sales Summary</td><td>Sales Controller → Director review</td></tr>
+        <tr><td>5th</td><td>Stock Take + Stock Variance</td><td>Procurement Lead → Director review</td></tr>
+        <tr><td>15th</td><td>Monthly Schedule</td><td>Outlet Managers → Ops Manager</td></tr>
+        <tr><td>25th</td><td>Petty Cash Submission</td><td>Outlet Managers → Finance Admin (YX)</td></tr>
+        <tr><td>28th</td><td>Audit Summary</td><td>Ops Manager → Director review</td></tr>
+        <tr><td>Last day</td><td>Part-time Payroll (RH/JB/CS)</td><td>Outlet Managers → Finance Admin</td></tr>
+      </tbody>
+    </table>
+
+    <div class="h2">Functional ownership</div>
+    <table class="ptable">
+      <thead><tr><th>Function</th><th>Owner</th></tr></thead>
+      <tbody>
+        <tr><td>Sales & Revenue</td><td>Operations Manager</td></tr>
+        <tr><td>Procurement & Stock</td><td>CK Manager</td></tr>
+        <tr><td>HR & Payroll</td><td>Finance Admin (Sam)</td></tr>
+        <tr><td>Service Standards & SOP</td><td>Operations Manager</td></tr>
+        <tr><td>Kitchen BOH</td><td>CK Manager</td></tr>
+        <tr><td>Audit & Compliance</td><td>Operations Manager</td></tr>
+        <tr><td>Food Cost & Quality</td><td>Culinary Director</td></tr>
+        <tr><td>Marketing & Brand</td><td>Owner (for now)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 09 HIRING -->
+  <div class="page" id="p-hiring">
+    <div class="page-num">09 — Operations</div>
+    <div class="page-title">Hiring Plan</div>
+    <div class="page-desc">The sequence and criteria for building the leadership team as Abundance scales.</div>
+
+    <div class="h2">Priority 1 — Operations Manager (hire now)</div>
+    <div class="block">
+      <div class="block-title">Up to $8,000 / month · F&B multi-outlet experience required</div>
+      <div class="block-sub" style="margin-top:12px">
+        <ul class="plist">
+          <li>Outlet P&L ownership (excl. director and corporate salaries)</li>
+          <li>Outlet manager management and development</li>
+          <li>SOP governance and compliance across all outlets</li>
+          <li>New outlet execution lead — from hiring to launch</li>
+          <li>Culture building and team rituals</li>
+          <li>Labour cost management per outlet</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ablock red">
+      <div class="ablock-label">Non-negotiables</div>
+      <div class="ablock-text">Multi-outlet F&B experience · P&L ownership experience · Strong people management depth · Translates strategy to execution · Believes in culture as a lever, not a soft concept</div>
+    </div>
+
+    <div class="h2">Priority 2 — Finance & HR Lead (at 4–5 outlets)</div>
+    <ul class="plist">
+      <li>Monthly P&L review and reporting</li>
+      <li>Financial controls and budgeting</li>
+      <li>HR strategy and hiring governance</li>
+      <li>Sam (Finance Admin) and bookkeeper oversight</li>
+    </ul>
+
+    <div class="h2">Priority 3 — Marketing Manager (at 5+ outlets)</div>
+    <ul class="plist">
+      <li>Marketing calendar ownership</li>
+      <li>Agency management and campaign execution</li>
+      <li>Seasonal and event campaign planning</li>
+      <li>Community management across all outlets</li>
+    </ul>
+  </div>
+
+  <!-- 10 DOCS -->
+  <div class="page" id="p-docs">
+    <div class="page-num">10 — Reference</div>
+    <div class="page-title">Master Document List</div>
+    <div class="page-desc">All active tracking and operational documents. One source of truth.</div>
+
+    <div class="h2">Sales tracking</div>
+    <a class="dlink" href="https://docs.google.com/spreadsheets/d/1FHk_dhqaiv12bsqOVTMmYnwNjSlq2Mp3jPtmzBCK7vY" target="_blank"><span class="dlink-icon">📊</span><div class="dlink-info"><div class="dlink-name">Ops Dashboard</div><div class="dlink-desc">Daily sales entry · from 1 Dec 2025</div></div><span class="dlink-arr">↗</span></a>
+    <a class="dlink" href="https://docs.google.com/spreadsheets/d/1hcf2tdrt-1GRz019NOkzcaNvBADVBmnJSulKu9rYNTs" target="_blank"><span class="dlink-icon">📊</span><div class="dlink-info"><div class="dlink-name">Mandy Sales Target</div><div class="dlink-desc">In-depth sales tracking vs target · read only</div></div><span class="dlink-arr">↗</span></a>
+    <a class="dlink" href="https://docs.google.com/spreadsheets/d/1CbOHNVLwOGBEt421Pm38Fjd2EP7sqeyft_R_ESp-Q4M" target="_blank"><span class="dlink-icon">📊</span><div class="dlink-info"><div class="dlink-name">Competitor Monitoring</div><div class="dlink-desc">Competitor promotions and crowd tracking</div></div><span class="dlink-arr">↗</span></a>
+
+    <div class="h2">Stock & procurement</div>
+    <a class="dlink" href="https://docs.google.com/spreadsheets/d/1pQbvEVcejw8xnNCXKbqJn2U47E4lREhcSlem5vp2iZ0" target="_blank"><span class="dlink-icon">📦</span><div class="dlink-info"><div class="dlink-name">Month End Stock Take Form</div><div class="dlink-desc">Submit by 5th each month</div></div><span class="dlink-arr">↗</span></a>
+    <a class="dlink" href="https://docs.google.com/spreadsheets/d/1njpkdw9wyJb2KC-YElHz1LR9DNYj7Dg7n0xfU5TngOo" target="_blank"><span class="dlink-icon">📦</span><div class="dlink-info"><div class="dlink-name">Stock Movement Form</div><div class="dlink-desc">Submit by 5th each month</div></div><span class="dlink-arr">↗</span></a>
+    <a class="dlink" href="https://docs.google.com/spreadsheets/d/1a-jVVoT9Ux5btMMi6CxmS5Dn0bMTYlX3HwxGBlxuQx4" target="_blank"><span class="dlink-icon">📦</span><div class="dlink-info"><div class="dlink-name">Ordering Groupchat Purchase Lists</div><div class="dlink-desc">Supplier list, par levels, MOQ per outlet</div></div><span class="dlink-arr">↗</span></a>
+
+    <div class="h2">Staff & HR</div>
+    <a class="dlink" href="https://docs.google.com/spreadsheets/d/1974RV8U8pE3OogleDtFDBBWEnUNBXPY7uwVxzlCmazM" target="_blank"><span class="dlink-icon">👥</span><div class="dlink-info"><div class="dlink-name">Monthly Schedule (RH/JB/CS)</div><div class="dlink-desc">Submit by 15th each month</div></div><span class="dlink-arr">↗</span></a>
+    <a class="dlink" href="https://docs.google.com/spreadsheets/d/1TLlAukITEYc1uXxBHKkgx4kvddgpOfXR6IEV1RJ1Kaw" target="_blank"><span class="dlink-icon">👥</span><div class="dlink-info"><div class="dlink-name">Leave Block Out</div><div class="dlink-desc">Leave approval and block-out tracking</div></div><span class="dlink-arr">↗</span></a>
+    <a class="dlink" href="https://docs.google.com/spreadsheets/d/1NUwIVAXVKzCUT2wj_nH956NazoAyetAcxPKS2pPOwco" target="_blank"><span class="dlink-icon">👥</span><div class="dlink-info"><div class="dlink-name">Staff Contact & Info Details</div><div class="dlink-desc">Update when new full-time joins</div></div><span class="dlink-arr">↗</span></a>
+    <a class="dlink" href="https://docs.google.com/spreadsheets/d/14rKl3XgKqyQHX2AjgUsW4P6R3kvbqpSRVwNRSQ9mDUI" target="_blank"><span class="dlink-icon">👥</span><div class="dlink-info"><div class="dlink-name">Uniform Tracker</div><div class="dlink-desc">Uniform issuance and exchange</div></div><span class="dlink-arr">↗</span></a>
+
+    <div class="h2">Training & product knowledge</div>
+    <a class="dlink" href="https://docs.google.com/document/d/1vADO5LOfSS2NL9cZjhwW4fagZxLgTceWyB0h7oKw5e4" target="_blank"><span class="dlink-icon">📖</span><div class="dlink-info"><div class="dlink-name">Abundance Training (Onboarding)</div><div class="dlink-desc">Complete within 2 months of joining</div></div><span class="dlink-arr">↗</span></a>
+    <a class="dlink" href="https://docs.google.com/presentation/d/1F60kMx4G9EFrLFiJgEydfiiU0U-YiA95GY4vtoexGDI" target="_blank"><span class="dlink-icon">📖</span><div class="dlink-info"><div class="dlink-name">Food Product Knowledge 2025 (EN)</div><div class="dlink-desc">Visuals and tasting notes</div></div><span class="dlink-arr">↗</span></a>
+    <a class="dlink" href="https://docs.google.com/presentation/d/1tXo9tB_YMPyeevwGKqwl_xnDF4SrI3tz0dO8bcP962Y" target="_blank"><span class="dlink-icon">📖</span><div class="dlink-info"><div class="dlink-name">Food Product Knowledge 2025 (中文)</div><div class="dlink-desc">Chinese version</div></div><span class="dlink-arr">↗</span></a>
+    <a class="dlink" href="https://docs.google.com/document/d/1VAnzLjd4v4u1p-9QgMX1W-TuIs89p7GPqCmP0iXurIA" target="_blank"><span class="dlink-icon">📖</span><div class="dlink-info"><div class="dlink-name">SOP + Training Guide for Upselling</div><div class="dlink-desc">Fixed upselling standard — not left to chance</div></div><span class="dlink-arr">↗</span></a>
+
+    <div class="h2">Operations & compliance</div>
+    <a class="dlink" href="https://docs.google.com/document/d/1iFEZjBfWwGd-8vRkNJ_0TXJw9OuykwkOd73I_VY_q8U" target="_blank"><span class="dlink-icon">⚙️</span><div class="dlink-info"><div class="dlink-name">Outlet Audit Marking</div><div class="dlink-desc">Monthly audit — submit to ops manager</div></div><span class="dlink-arr">↗</span></a>
+    <a class="dlink" href="https://docs.google.com/spreadsheets/d/180fBpyDDky7Hywwacm3EzcN_A2LkYG_Hn4DozexPahg" target="_blank"><span class="dlink-icon">⚙️</span><div class="dlink-info"><div class="dlink-name">Discounts Summary</div><div class="dlink-desc">All approved discounts — no exceptions outside this list</div></div><span class="dlink-arr">↗</span></a>
+    <a class="dlink" href="https://docs.google.com/document/d/1XDRrRg1xi25_oG5COjjPxu5l3Y5HXrMU5QB14eJz9iw" target="_blank"><span class="dlink-icon">⚙️</span><div class="dlink-info"><div class="dlink-name">Food Return Guidelines</div><div class="dlink-desc">Handling food lapses aligned with Abundance values</div></div><span class="dlink-arr">↗</span></a>
+    <a class="dlink" href="https://docs.google.com/document/d/1eKy-vVVgUFdyMtmUODKUMekghlBnBJbEz3UD-wEssUY" target="_blank"><span class="dlink-icon">⚙️</span><div class="dlink-info"><div class="dlink-name">WiFi Contingency Guide</div><div class="dlink-desc">First steps during WiFi breakdown</div></div><span class="dlink-arr">↗</span></a>
+    <a class="dlink" href="https://docs.google.com/spreadsheets/d/1phCR8lmW6zNFnMIcI86hZ7sf4Ksbm8Q9" target="_blank"><span class="dlink-icon">⚙️</span><div class="dlink-info"><div class="dlink-name">Kitchen Issues Tracker</div><div class="dlink-desc">Internal tracking for kitchen issues</div></div><span class="dlink-arr">↗</span></a>
+  </div>
+
+</main>
+
+<script>
+const pages = { brand:'p-brand', org:'p-org', kpis:'p-kpis', meetings:'p-meetings', pnl:'p-pnl', reset:'p-reset', outlets:'p-outlets', responsibilities:'p-responsibilities', hiring:'p-hiring', docs:'p-docs' };
+function go(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(pages[id]).classList.add('active');
+  event.currentTarget.classList.add('active');
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
